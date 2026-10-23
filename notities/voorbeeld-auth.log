@@ -1,0 +1,66 @@
+# NEP-LOGBESTAND om mee te oefenen (unit 3, les 5). Alle IP-adressen komen uit
+# reeksen die speciaal voor documentatie zijn gereserveerd (RFC 5737) of uit je eigen labnetwerk.
+Oct 20 07:58:00 labserver sshd[1201]: Accepted publickey for student from 192.168.56.1 port 50122 ssh2
+Oct 20 07:58:01 labserver sshd[1202]: pam_unix(sshd:session): session opened for user student by (uid=0)
+Oct 20 07:58:02 labserver sshd[1204]: Failed password for invalid user ubuntu from 203.0.113.45 port 48024 ssh2
+Oct 20 07:58:03 labserver sshd[1208]: Failed password for root from 203.0.113.45 port 57870 ssh2
+Oct 20 07:58:04 labserver sshd[1210]: Failed password for invalid user admin from 203.0.113.45 port 40976 ssh2
+Oct 20 07:58:07 labserver sshd[1211]: Failed password for invalid user oracle from 203.0.113.45 port 56559 ssh2
+Oct 20 07:58:10 labserver sshd[1215]: Failed password for invalid user admin from 203.0.113.45 port 46515 ssh2
+Oct 20 07:58:13 labserver sshd[1218]: Failed password for invalid user oracle from 203.0.113.45 port 54719 ssh2
+Oct 20 07:58:16 labserver sshd[1222]: Failed password for invalid user admin from 203.0.113.45 port 45231 ssh2
+Oct 20 07:58:17 labserver sshd[1224]: Failed password for invalid user pi from 203.0.113.45 port 49105 ssh2
+Oct 20 07:58:18 labserver sshd[1228]: Failed password for invalid user pi from 203.0.113.45 port 43349 ssh2
+Oct 20 07:58:20 labserver sshd[1231]: Failed password for root from 203.0.113.45 port 51763 ssh2
+Oct 20 07:58:23 labserver sshd[1232]: Failed password for invalid user admin from 203.0.113.45 port 55054 ssh2
+Oct 20 07:58:26 labserver sshd[1235]: Failed password for invalid user guest from 203.0.113.45 port 42582 ssh2
+Oct 20 07:58:29 labserver sshd[1237]: Failed password for root from 203.0.113.45 port 51850 ssh2
+Oct 20 07:58:32 labserver sshd[1239]: Failed password for root from 203.0.113.45 port 41501 ssh2
+Oct 20 07:58:33 labserver sshd[1240]: Failed password for invalid user ubuntu from 203.0.113.45 port 42614 ssh2
+Oct 20 07:58:35 labserver sshd[1243]: Failed password for invalid user guest from 203.0.113.45 port 49108 ssh2
+Oct 20 07:58:37 labserver sshd[1245]: Failed password for invalid user test from 203.0.113.45 port 52130 ssh2
+Oct 20 07:58:40 labserver sshd[1247]: Failed password for invalid user ubuntu from 203.0.113.45 port 42339 ssh2
+Oct 20 07:58:41 labserver sshd[1251]: Failed password for invalid user admin from 203.0.113.45 port 48021 ssh2
+Oct 20 07:58:44 labserver sshd[1253]: Failed password for invalid user guest from 203.0.113.45 port 48845 ssh2
+Oct 20 07:58:45 labserver sshd[1254]: Failed password for invalid user pi from 203.0.113.45 port 41832 ssh2
+Oct 20 07:58:47 labserver sshd[1255]: Failed password for invalid user pi from 203.0.113.45 port 53145 ssh2
+Oct 20 07:58:50 labserver sshd[1258]: Failed password for invalid user oracle from 203.0.113.45 port 58585 ssh2
+Oct 20 07:58:52 labserver sshd[1262]: Failed password for invalid user oracle from 203.0.113.45 port 56358 ssh2
+Oct 20 07:58:53 labserver sshd[1264]: Failed password for invalid user test from 203.0.113.45 port 48679 ssh2
+Oct 20 07:58:55 labserver sshd[1268]: Failed password for invalid user admin from 203.0.113.45 port 57661 ssh2
+Oct 20 07:58:57 labserver sshd[1270]: Failed password for root from 203.0.113.45 port 53087 ssh2
+Oct 20 07:58:59 labserver sshd[1271]: Failed password for invalid user test from 203.0.113.45 port 56696 ssh2
+Oct 20 07:59:00 labserver sshd[1273]: Failed password for invalid user admin from 203.0.113.45 port 43592 ssh2
+Oct 20 07:59:01 labserver sshd[1277]: Failed password for invalid user guest from 203.0.113.45 port 59543 ssh2
+Oct 20 07:59:03 labserver sshd[1280]: Failed password for invalid user guest from 203.0.113.45 port 59526 ssh2
+Oct 20 07:59:06 labserver sshd[1281]: Failed password for invalid user admin from 203.0.113.45 port 40376 ssh2
+Oct 20 07:59:09 labserver sshd[1284]: Failed password for invalid user admin from 203.0.113.45 port 48743 ssh2
+Oct 20 07:59:11 labserver sshd[1286]: Failed password for root from 203.0.113.45 port 49617 ssh2
+Oct 20 07:59:14 labserver sshd[1289]: Failed password for invalid user user from 203.0.113.45 port 40106 ssh2
+Oct 20 07:59:17 labserver sshd[1290]: Failed password for invalid user admin from 203.0.113.45 port 45854 ssh2
+Oct 20 07:59:20 labserver sshd[1292]: Failed password for invalid user ubuntu from 203.0.113.45 port 56635 ssh2
+Oct 20 07:59:21 labserver sshd[1293]: Failed password for invalid user test from 203.0.113.45 port 52252 ssh2
+Oct 20 07:59:22 labserver sshd[1296]: Disconnecting invalid user admin 203.0.113.45 port 55012: Too many authentication failures [preauth]
+Oct 20 08:09:22 labserver sshd[1300]: Failed password for student from 192.168.56.1 port 50201 ssh2
+Oct 20 08:09:26 labserver sshd[1301]: Accepted password for student from 192.168.56.1 port 50201 ssh2
+Oct 20 08:10:25 labserver sshd[1303]: Failed password for root from 198.51.100.23 port 51894 ssh2
+Oct 20 08:10:55 labserver sshd[1304]: Failed password for invalid user admin from 198.51.100.23 port 47892 ssh2
+Oct 20 08:12:23 labserver sshd[1306]: Failed password for invalid user user from 198.51.100.23 port 42267 ssh2
+Oct 20 08:13:53 labserver sshd[1308]: Failed password for invalid user test from 198.51.100.23 port 55574 ssh2
+Oct 20 08:15:07 labserver sshd[1310]: Failed password for invalid user ubuntu from 198.51.100.23 port 57290 ssh2
+Oct 20 08:16:06 labserver sshd[1314]: Failed password for invalid user admin from 198.51.100.23 port 46591 ssh2
+Oct 20 08:17:32 labserver sshd[1318]: Failed password for invalid user pi from 198.51.100.23 port 54355 ssh2
+Oct 20 08:18:20 labserver sshd[1319]: Failed password for root from 198.51.100.23 port 48123 ssh2
+Oct 20 08:19:50 labserver sshd[1321]: Failed password for invalid user pi from 198.51.100.23 port 40689 ssh2
+Oct 20 08:20:10 labserver sshd[1322]: Failed password for root from 198.51.100.23 port 47216 ssh2
+Oct 20 08:20:38 labserver sshd[1323]: Failed password for invalid user admin from 198.51.100.23 port 47501 ssh2
+Oct 20 08:22:03 labserver sshd[1325]: Failed password for invalid user pi from 198.51.100.23 port 42321 ssh2
+Oct 20 08:22:50 labserver sshd[1327]: Failed password for invalid user ubuntu from 198.51.100.23 port 55906 ssh2
+Oct 20 08:24:10 labserver sshd[1329]: Failed password for root from 198.51.100.23 port 58881 ssh2
+Oct 20 08:24:21 labserver sshd[1331]: Failed password for invalid user git from 192.0.2.77 port 55498 ssh2
+Oct 20 08:24:27 labserver sshd[1335]: Failed password for invalid user git from 192.0.2.77 port 43090 ssh2
+Oct 20 08:24:38 labserver sshd[1339]: Failed password for invalid user git from 192.0.2.77 port 51609 ssh2
+Oct 20 08:24:43 labserver sshd[1340]: Failed password for invalid user git from 192.0.2.77 port 55303 ssh2
+Oct 20 08:24:54 labserver sshd[1343]: Failed password for invalid user git from 192.0.2.77 port 41986 ssh2
+Oct 20 08:39:54 labserver sshd[1344]: Accepted publickey for student from 192.168.56.1 port 50388 ssh2
+Oct 20 08:59:54 labserver sshd[1346]: pam_unix(sshd:session): session closed for user student

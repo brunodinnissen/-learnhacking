@@ -1,0 +1,1433 @@
+<title>Leerpad Ethisch Hacken</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one centred column (max 720px): stat bar, sticky tab bar, one panel per tab; lessons and reviews open as bottom sheets */
+:root{
+  --bg:#ECEFF4; --surface:#FFFFFF; --surface-2:#F4F6F9; --ink:#141A29; --muted:#566073; --line:#D5DAE3;
+  --accent:#2846C7; --accent-deep:#1A2F8F; --accent-ink:#FFFFFF; --accent-soft:#E2E7FB;
+  --amber:#B86E05; --amber-soft:#FBEFD9;
+  --ok:#0B7F5F; --ok-deep:#075A43; --ok-soft:#DAF1E8; --bad:#BC2F2F; --bad-soft:#F9E1E1;
+  --later:#C3C9D5; --scrim:rgba(12,16,26,.5);
+  --heat1:#D5DCF8; --heat2:#9DAEEE; --heat3:#5A73DD; --heat4:#2846C7;
+  --f-display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E121B; --surface:#161B27; --surface-2:#1C2231; --ink:#E6E9F0; --muted:#97A0B2; --line:#2A3143;
+    --accent:#8399FF; --accent-deep:#4F64C8; --accent-ink:#0B1130; --accent-soft:#222B4E;
+    --amber:#F0A63A; --amber-soft:#3A2C14;
+    --ok:#3FC79A; --ok-deep:#24876A; --ok-soft:#133328; --bad:#FF7A7A; --bad-soft:#3B1D1D;
+    --later:#3A4255; --scrim:rgba(0,0,0,.6);
+    --heat1:#222B4A; --heat2:#34458A; --heat3:#5A73D6; --heat4:#8399FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E121B; --surface:#161B27; --surface-2:#1C2231; --ink:#E6E9F0; --muted:#97A0B2; --line:#2A3143;
+  --accent:#8399FF; --accent-deep:#4F64C8; --accent-ink:#0B1130; --accent-soft:#222B4E;
+  --amber:#F0A63A; --amber-soft:#3A2C14;
+  --ok:#3FC79A; --ok-deep:#24876A; --ok-soft:#133328; --bad:#FF7A7A; --bad-soft:#3B1D1D;
+  --later:#3A4255; --scrim:rgba(0,0,0,.6);
+  --heat1:#222B4A; --heat2:#34458A; --heat3:#5A73D6; --heat4:#8399FF;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.2;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 72px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.stack{display:grid;gap:16px}
+.stack-s{display:grid;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.section-title{font-size:18px;margin-bottom:10px}
+
+/* top bar */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding-block:8px 12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand h1{font-size:21px;letter-spacing:.01em}
+.mark{width:34px;height:34px;flex:none;border-radius:9px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--f-mono);font-weight:500;font-size:14px}
+.stats{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip svg{width:16px;height:16px;flex:none}
+.chip.streak svg{color:var(--amber)}
+.chip.xp svg{color:var(--accent)}
+
+/* tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:20px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{appearance:none;border:0;background:none;padding:12px 12px 9px;font-weight:600;font-size:14px;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* today */
+.today-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.ring{width:92px;height:92px;flex:none}
+.ring text{font-family:var(--f-display);font-weight:700;fill:var(--ink)}
+.ring .sub{font-family:var(--f-mono);font-weight:400;fill:var(--muted)}
+.today-head h2{font-size:22px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pill:hover{border-color:var(--accent)}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.plan{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.item.done{background:var(--surface-2)}
+.item.done .item-text{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--later)}
+.item.quiz{border-color:var(--accent);background:var(--accent-soft)}
+.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--later);background:var(--surface);display:grid;place-items:center;cursor:pointer;flex:none;padding:0;margin-top:1px;color:transparent}
+.check:hover{border-color:var(--ok)}
+.check[aria-checked="true"]{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.check svg{width:16px;height:16px}
+.qicon{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:700}
+.item-text{font-weight:500}
+.item-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:6px;font-size:13px;color:var(--muted)}
+.mins{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.open{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:7px;border:1px solid var(--line);text-decoration:none;color:var(--accent);font-size:13px;font-weight:600;white-space:nowrap;background:var(--surface)}
+.open:hover{border-color:var(--accent)}
+.open svg{width:13px;height:13px}
+.textbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;text-decoration-color:var(--later);text-underline-offset:2px;cursor:pointer;font-size:13px;text-align:left}
+.textbtn:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:10px;border:0;font-weight:600;cursor:pointer;background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 0 var(--accent-deep)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-deep)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.btn.danger{background:var(--bad);color:var(--surface);box-shadow:none}
+.btn:disabled{opacity:.5;cursor:default}
+.review-card{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--amber-soft);border-color:transparent}
+.review-card > div{min-width:0;flex:1 1 240px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;margin-top:12px}
+.day{display:grid;gap:4px;justify-items:center;font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:transparent}
+.dot svg{width:14px;height:14px}
+.dot.on{background:var(--amber);border-color:var(--amber);color:var(--surface)}
+.dot.today{outline:2px solid var(--ink);outline-offset:2px}
+.callout{padding:12px 14px;border-radius:var(--r);background:var(--ok-soft);font-size:14px}
+
+/* path */
+.unit{margin-bottom:26px}
+.unit-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--r);background:var(--ink);color:var(--bg)}
+.unit-head > div{min-width:0}
+.unit-head .eyebrow{color:inherit;opacity:.7}
+.unit-head h3{font-size:19px;margin-top:2px}
+.unit-head p{margin-top:4px;font-size:14px;opacity:.82}
+.meter{font-family:var(--f-mono);font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums;padding:2px 8px;border-radius:6px;border:1px solid currentColor;opacity:.85}
+.path{--zig:52px;display:grid;justify-items:center;gap:16px;padding-block:22px 4px}
+@media (max-width:440px){.path{--zig:32px}}
+.node-row{display:grid;justify-items:center;gap:6px;transform:translateX(calc(var(--k,0) * var(--zig)));width:156px}
+.node{position:relative;width:62px;height:62px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:19px;background:var(--surface);color:var(--muted);box-shadow:inset 0 0 0 2px var(--later),0 4px 0 var(--later);transition:transform .08s}
+.node:active{transform:translateY(3px)}
+.node.done{background:var(--ok);color:var(--surface);box-shadow:0 4px 0 var(--ok-deep)}
+.node.done svg{width:26px;height:26px}
+.node.started{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent),0 4px 0 var(--accent-deep)}
+.node.current{background:var(--accent);color:var(--accent-ink);box-shadow:0 4px 0 var(--accent-deep),0 0 0 7px var(--accent-soft)}
+.node .star{position:absolute;right:-5px;top:-5px;width:22px;height:22px;border-radius:50%;background:var(--amber);color:var(--surface);display:grid;place-items:center;box-shadow:0 0 0 2px var(--bg)}
+.node .star svg{width:12px;height:12px}
+.node-label{font-size:13px;line-height:1.3;text-align:center;max-width:156px}
+.node-label small{display:block;color:var(--muted);font-family:var(--f-mono);font-size:11px;margin-top:2px}
+.start-tag{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.08em;background:var(--accent);color:var(--accent-ink);padding:3px 8px;border-radius:6px}
+
+/* tools */
+.tool-list{display:grid;gap:8px}
+.tool{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.tool h4{font-family:var(--f-body);font-size:15px;font-weight:600}
+.tag{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+pre.cmd{margin:0;padding:12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);font-family:var(--f-mono);font-size:12.5px;overflow-x:auto;white-space:pre}
+
+/* progress */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.tile .num{font-family:var(--f-display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile .lbl{font-size:13px;color:var(--muted);margin-top:2px}
+.bar{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.bar > span{display:block;height:100%;background:var(--accent);border-radius:99px}
+.units-prog{display:grid;gap:10px}
+.uprog{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;font-size:14px}
+.uprog .bar{grid-column:1 / -1;height:8px}
+.uprog .n{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.heat-wrap{overflow-x:auto}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,14px);grid-auto-columns:14px;gap:3px;width:max-content}
+.heat i{border-radius:3px;background:var(--surface-2);border:1px solid var(--line)}
+.heat i.l1{background:var(--heat1);border-color:var(--heat1)}
+.heat i.l2{background:var(--heat2);border-color:var(--heat2)}
+.heat i.l3{background:var(--heat3);border-color:var(--heat3)}
+.heat i.l4{background:var(--heat4);border-color:var(--heat4)}
+.heat i.future{visibility:hidden}
+.legend{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.badge{padding:12px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);display:grid;gap:2px}
+.badge b{font-family:var(--f-display);font-size:15px}
+.badge span{font-size:12px;color:var(--muted)}
+.badge.on{border-color:var(--amber);background:var(--amber-soft)}
+.badge:not(.on){opacity:.6}
+textarea, input[type="text"]{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical}
+
+/* sheet */
+.backdrop{position:fixed;inset:0;background:var(--scrim);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:720px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding-top:18px;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:grid;gap:18px;align-content:start}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sheet-head > div{min-width:0}
+.sheet-head h2{font-size:24px;margin-top:2px}
+.x{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;flex:none}
+.x svg{width:16px;height:16px}
+.intro{font-size:15px;max-width:62ch}
+.q{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:var(--r)}
+.q > p{font-weight:600}
+.opt{text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);border-bottom-width:3px;background:var(--surface);cursor:pointer;font-size:14px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.fb{font-size:14px;padding:10px 12px;border-radius:10px}
+.fb.good{background:var(--ok-soft)}
+.fb.bad{background:var(--bad-soft)}
+.progressline{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.progressline span{display:block;height:100%;background:var(--ok);transition:width .3s}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:500;z-index:40;max-width:calc(100% - 32px);box-shadow:0 6px 24px var(--scrim)}
+.footer{margin-top:28px;font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true">&gt;_</div><h1>Leerpad Ethisch Hacken</h1></div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Onderdelen">
+    <button class="tab" role="tab" data-tab="vandaag" aria-selected="true">Vandaag</button>
+    <button class="tab" role="tab" data-tab="pad" aria-selected="false">Leerpad</button>
+    <button class="tab" role="tab" data-tab="gereedschap" aria-selected="false">Gereedschap</button>
+    <button class="tab" role="tab" data-tab="voortgang" aria-selected="false">Voortgang</button>
+    <button class="tab" role="tab" data-tab="instellingen" aria-selected="false">Instellingen</button>
+  </nav>
+  <main>
+    <section data-panel="vandaag" class="stack" id="p-vandaag"></section>
+    <section data-panel="pad" id="p-pad" hidden></section>
+    <section data-panel="gereedschap" class="stack" id="p-gereedschap" hidden></section>
+    <section data-panel="voortgang" class="stack" id="p-voortgang" hidden></section>
+    <section data-panel="instellingen" class="stack" id="p-instellingen" hidden></section>
+  </main>
+  <p class="footer" id="storage-note">Voortgang laden…</p>
+</div>
+<div id="sheet-root"></div>
+<div id="toast-root"></div>
+
+<script>
+/* ---------- Content: units, lessons, steps, quiz ---------- */
+var THM = "https://tryhackme.com/room/";
+var PS = "https://portswigger.net/web-security/";
+var UNITS = [
+ {title:"Start & spelregels", blurb:"Wat mag wel en niet, en je werkplek klaarzetten.", lessons:[
+  {id:"l0-1", title:"Hacken met toestemming",
+   intro:"Hacken zonder toestemming is in Nederland strafbaar (computervredebreuk, artikel 138ab Wetboek van Strafrecht), ook als je niets kapotmaakt. Op oefenplatforms en in je eigen lab heb je die toestemming wel. Daar ga je dus oefenen.",
+   steps:[
+    {t:"Lees artikel 138ab in het Wetboek van Strafrecht (zoek op de pagina naar 138ab)", m:10, url:"https://wetten.overheid.nl/BWBR0001854/", label:"wetten.overheid.nl"},
+    {t:"Lees op de site van het DIVD hoe je een kwetsbaarheid netjes meldt (coordinated vulnerability disclosure)", m:15, url:"https://www.divd.nl/", label:"DIVD"},
+    {t:"Vul notities/hackerscode.md in je repo aan met je eigen regels: wat doe je wel en wat niet?", m:10}
+   ],
+   quiz:[
+    {q:"Je ontdekt per ongeluk een lek in de website van je sportclub. Wat is de beste volgende stap?", o:["Het lek melden bij de club en niet verder testen","Nog even verder testen om zeker te weten dat het werkt","Er een screenshot van op social media zetten","Niets doen en het vergeten"], a:0, e:"Melden zonder verder te testen is de kern van coordinated vulnerability disclosure. Verder testen kan al strafbaar zijn."},
+    {q:"Waar mag je zonder problemen hacken oefenen?", o:["Op je eigen virtuele machines en oefenplatforms zoals TryHackMe","Op de wifi van de buren","Op de schoolwebsite, als je het daarna meldt","Op elke website die slecht beveiligd lijkt"], a:0, e:"Je hebt alleen toestemming op systemen die van jou zijn, of waarvoor de eigenaar die uitdrukkelijk geeft."}
+   ]},
+  {id:"l0-2", title:"Je werkplek klaarzetten",
+   intro:"Een paar gratis accounts en programma's, zodat je de komende weken meteen kunt beginnen. Op het tabblad Gereedschap staat alles op een rij. Je hebt nergens een betaald abonnement voor nodig.",
+   steps:[
+    {t:"Maak een gratis account op TryHackMe", m:5, url:"https://tryhackme.com/", label:"TryHackMe"},
+    {t:"Maak een gratis account op de PortSwigger Web Security Academy", m:5, url:PS, label:"PortSwigger"},
+    {t:"Installeer VS Code en Python 3 (de commando's staan in SETUP.md in je repo)", m:20, url:"https://www.python.org/downloads/", label:"python.org"},
+    {t:"Installeer Git en clone je repository -learnhacking naar je computer", m:15, url:"https://git-scm.com/downloads", label:"git-scm.com"}
+   ],
+   quiz:[
+    {q:"Waarvoor is Python vooral handig als beginnende hacker?", o:["Kleine taken automatiseren en scripts lezen of schrijven","Websites mooier maken","Virussen verwijderen"], a:0, e:"Met een paar regels Python automatiseer je saai werk, zoals logbestanden doorzoeken."},
+    {q:"Waarom bewaar je je notities in een Git-repository?", o:["Je houdt versies bij en hebt je notities op elke computer","Git maakt je computer veiliger","Het is verplicht op oefenplatforms"], a:0, e:"Git bewaart elke versie. Zo bouw je een eigen naslagwerk op dat je nooit kwijtraakt."}
+   ]},
+  {id:"l0-3", title:"Slim leren en write-ups",
+   intro:"Je onthoudt het meeste als je in je eigen woorden opschrijft wat je deed en waarom het werkte. Zo'n verslag heet een write-up.",
+   steps:[
+    {t:"Open notities/_template-writeup.md in je repo en bekijk hoe een write-up is opgebouwd", m:10},
+    {t:"Kies een vast leermoment (bijvoorbeeld 19:00 tot 20:00) en zet het in je agenda", m:5},
+    {t:"Stel op het tabblad Instellingen je dagtijd en je weekdoel in", m:5}
+   ],
+   quiz:[
+    {q:"Wat hoort zeker in een goede write-up?", o:["Wat je probeerde, wat werkte en waarom het werkte","Alleen het eindantwoord (de flag)","Zo veel mogelijk commando's zonder uitleg"], a:0, e:"Je denkproces is het waardevolste deel. Daar leer je later het meest van."},
+    {q:"Je hebt de komende weken maar 3 avonden per week tijd. Wat doe je?", o:["Je weekdoel tijdelijk op 3 dagen zetten en kortere sessies doen","Stoppen tot je weer elke dag tijd hebt","Alles in het weekend in één keer inhalen"], a:0, e:"Regelmaat werkt beter dan inhalen. Met een lager weekdoel blijft je weekreeks gewoon staan."}
+   ]}
+ ]},
+ {title:"Linux & de terminal", blurb:"Bijna alle securitytools draaien op Linux. Hier leer je de commandline.", lessons:[
+  {id:"l1-1", title:"Linux Fundamentals 1",
+   intro:"Je eerste commando's: door mappen navigeren, bestanden bekijken en zoeken. TryHackMe geeft je een Linux-machine in je browser, dus je hoeft niets te installeren.",
+   steps:[
+    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 1", m:30, url:THM+"linuxfundamentalspart1", label:"TryHackMe"},
+    {t:"Maak de room af en noteer de commando's die nieuw voor je waren", m:25, url:THM+"linuxfundamentalspart1", label:"TryHackMe"}
+   ],
+   quiz:[
+    {q:"Welk commando laat zien in welke map je nu staat?", o:["pwd","ls","cd","cat"], a:0, e:"pwd staat voor print working directory."},
+    {q:"Wat doet cat bestand.txt?", o:["De inhoud van het bestand tonen","Het bestand verwijderen","Het bestand kopiëren","Het bestand versleutelen"], a:0, e:"cat (van concatenate) zet de inhoud van een of meer bestanden op je scherm."}
+   ]},
+  {id:"l1-2", title:"Linux Fundamentals 2",
+   intro:"Inloggen via SSH, bestandsrechten en de belangrijkste mappen van een Linux-systeem.",
+   steps:[
+    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 2", m:30, url:THM+"linuxfundamentalspart2", label:"TryHackMe"},
+    {t:"Maak de room af en schrijf in je eigen woorden uit hoe rwx-rechten werken", m:25, url:THM+"linuxfundamentalspart2", label:"TryHackMe"}
+   ],
+   quiz:[
+    {q:"Wat betekent de r in de rechten rwx?", o:["read (lezen)","run (starten)","remove (verwijderen)","root"], a:0, e:"r = lezen, w = schrijven, x = uitvoeren."},
+    {q:"Waarvoor gebruik je SSH?", o:["Om veilig op afstand in te loggen op een andere computer","Om websites te bouwen","Om bestanden te comprimeren"], a:0, e:"SSH (Secure Shell) geeft je een versleutelde terminal op een andere machine."}
+   ]},
+  {id:"l1-3", title:"Linux Fundamentals 3",
+   intro:"Tekst bewerken in de terminal, bestanden downloaden, processen en logbestanden.",
+   steps:[
+    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 3", m:30, url:THM+"linuxfundamentalspart3", label:"TryHackMe"},
+    {t:"Maak de room af en maak een spiekbriefje met je 15 belangrijkste commando's", m:25, url:THM+"linuxfundamentalspart3", label:"TryHackMe"}
+   ],
+   quiz:[
+    {q:"Waar staan op Linux meestal de logbestanden?", o:["/var/log","/home","/bin","/tmp"], a:0, e:"In /var/log vind je onder andere inlogpogingen en systeemmeldingen."},
+    {q:"Wat doet een pipe (|) tussen twee commando's?", o:["De uitvoer van het eerste commando gaat naar het tweede","Beide commando's draaien tegelijk","De uitvoer wordt in een bestand opgeslagen"], a:0, e:"Met pipes bouw je kleine commando's om tot krachtige combinaties."}
+   ]},
+  {id:"l1-4", title:"Bandit: level 0 tot 5",
+   intro:"OverTheWire Bandit is een spel. Elk level verstopt het wachtwoord voor het volgende level. Je logt in via SSH vanaf je eigen terminal. Lees per level de opdracht en de tips op de site.",
+   steps:[
+    {t:"Lees de uitleg op de Bandit-pagina en log in op level 0", m:15, url:"https://overthewire.org/wargames/bandit/", label:"OverTheWire"},
+    {t:"Speel level 1 tot en met 5", m:35, url:"https://overthewire.org/wargames/bandit/", label:"OverTheWire"},
+    {t:"Schrijf per level in één zin op wat de truc was (zonder de wachtwoorden)", m:10}
+   ],
+   quiz:[
+    {q:"Hoe zie je verborgen bestanden (die met een punt beginnen) in een map?", o:["ls -a","ls -h","cd .","pwd -a"], a:0, e:"De optie -a staat voor all: ook verborgen bestanden."},
+    {q:"Met welk commando zoek je naar tekst in een bestand?", o:["grep","find","chmod","ls"], a:0, e:"find zoekt naar bestanden, grep zoekt naar tekst in bestanden."}
+   ]},
+  {id:"l1-5", title:"Bandit: level 6 tot 12",
+   intro:"Zoeken, filteren en coderen. Hier merk je hoe handig pipes zijn.",
+   steps:[
+    {t:"Speel level 6 tot en met 9", m:30, url:"https://overthewire.org/wargames/bandit/", label:"OverTheWire"},
+    {t:"Speel level 10 tot en met 12", m:30, url:"https://overthewire.org/wargames/bandit/", label:"OverTheWire"}
+   ],
+   quiz:[
+    {q:"Wat is base64?", o:["Een manier om data als leesbare tekens te coderen, zonder geheim","Encryptie met een geheime sleutel","Een compressieformaat"], a:0, e:"Base64 is encoding: iedereen kan het terugdraaien. Het beschermt dus niets."},
+    {q:"Wat is het verschil tussen comprimeren en versleutelen?", o:["Comprimeren maakt kleiner, versleutelen maakt onleesbaar zonder sleutel","Er is geen verschil","Versleutelen maakt bestanden altijd kleiner"], a:0, e:"Een zip-bestand is kleiner, maar zonder wachtwoord kan iedereen het openen."}
+   ]},
+  {id:"l1-6", title:"Bandit: level 13 tot 20",
+   intro:"SSH-sleutels, poorten en verbindingen. Hier komen Linux en netwerken samen.",
+   steps:[
+    {t:"Speel level 13 tot en met 16", m:30, url:"https://overthewire.org/wargames/bandit/", label:"OverTheWire"},
+    {t:"Speel level 17 tot en met 20", m:30, url:"https://overthewire.org/wargames/bandit/", label:"OverTheWire"},
+    {t:"Werk je spiekbriefje bij: welke commando's gebruikte je het vaakst?", m:10}
+   ],
+   quiz:[
+    {q:"Wat is een SSH-privésleutel?", o:["Een geheim bestand waarmee je bewijst wie je bent, dat je nooit deelt","Een wachtwoord dat je mag delen","Het openbare adres van een server"], a:0, e:"De publieke sleutel mag iedereen zien, de privésleutel houd je altijd voor jezelf."},
+    {q:"Wat is een poort op een computer?", o:["Een genummerd kanaal waarop een dienst luistert, zoals 22 voor SSH","Een USB-aansluiting","Een map met programma's"], a:0, e:"Eén computer kan tegelijk een webserver (80/443) en SSH (22) draaien, elk op een eigen poort."}
+   ]}
+ ]},
+ {title:"Netwerken", blurb:"Hoe computers met elkaar praten. Zonder dit begrijp je geen enkele aanval of verdediging.", lessons:[
+  {id:"l2-1", title:"Wat is een netwerk?",
+   intro:"IP-adressen, MAC-adressen, routers en het lokale netwerk bij jou thuis. Dit zijn rooms uit het gratis Pre Security-pad van TryHackMe.",
+   steps:[
+    {t:"Doe de room What is Networking?", m:30, url:THM+"whatisnetworking", label:"TryHackMe"},
+    {t:"Doe de room Intro to LAN", m:30, url:THM+"introtolan", label:"TryHackMe"}
+   ],
+   quiz:[
+    {q:"Wat is een IP-adres?", o:["Het adres van een apparaat op een netwerk","De naam van een website","Het serienummer van je router"], a:0, e:"Net als een huisadres zorgt een IP-adres dat data bij het juiste apparaat aankomt."},
+    {q:"Wat doet DHCP?", o:["Apparaten automatisch een IP-adres geven","Websites versleutelen","Virussen blokkeren"], a:0, e:"Daarom hoef je thuis nooit zelf een IP-adres in te stellen: je router doet het via DHCP."}
+   ]},
+  {id:"l2-2", title:"Het OSI-model en pakketten",
+   intro:"Netwerkverkeer is opgebouwd in lagen. Als je die kent, snap je waar een aanval of verdediging precies werkt.",
+   steps:[
+    {t:"Doe de room OSI Model", m:30, url:THM+"osimodelzi", label:"TryHackMe"},
+    {t:"Doe de room Packets & Frames", m:30, url:THM+"packetsframes", label:"TryHackMe"}
+   ],
+   quiz:[
+    {q:"Wat is het belangrijkste verschil tussen TCP en UDP?", o:["TCP controleert of alles aankomt, UDP niet","UDP is altijd veiliger","Er is geen verschil"], a:0, e:"TCP is betrouwbaar maar trager, UDP is snel en wordt gebruikt voor bijvoorbeeld video en games."},
+    {q:"Waarmee begint een TCP-verbinding?", o:["Een three-way handshake: SYN, SYN-ACK, ACK","Een wachtwoord","Een DNS-verzoek"], a:0, e:"Die drie berichten zie je straks zelf terug in Wireshark."}
+   ]},
+  {id:"l2-3", title:"DNS en HTTP",
+   intro:"Wat gebeurt er als je een webadres intypt? DNS zoekt het adres op, HTTP haalt de pagina op.",
+   steps:[
+    {t:"Doe de room DNS in Detail", m:30, url:THM+"dnsindetail", label:"TryHackMe"},
+    {t:"Doe de room HTTP in Detail", m:30, url:THM+"httpindetail", label:"TryHackMe"}
+   ],
+   quiz:[
+    {q:"Wat doet DNS?", o:["Domeinnamen omzetten naar IP-adressen","Websites sneller maken","E-mail versturen"], a:0, e:"DNS is het telefoonboek van internet."},
+    {q:"Welke HTTP-statuscode betekent 'niet gevonden'?", o:["404","200","301","500"], a:0, e:"200 = gelukt, 301 = verhuisd, 404 = niet gevonden, 500 = fout op de server."}
+   ]},
+  {id:"l2-4", title:"Hoe websites werken",
+   intro:"Het verschil tussen wat in je browser draait en wat op de server draait. Dit heb je straks nodig voor websecurity.",
+   steps:[
+    {t:"Doe de room How Websites Work", m:30, url:THM+"howwebsiteswork", label:"TryHackMe"},
+    {t:"Open in je browser de ontwikkelaarstools (F12) en bekijk op het tabblad Netwerk welke verzoeken een website doet", m:20}
+   ],
+   quiz:[
+    {q:"Wat draait er in de browser van de bezoeker?", o:["HTML, CSS en JavaScript","De database van de website","De code van de webserver"], a:0, e:"Alles wat in de browser draait kan de bezoeker bekijken en aanpassen. Daarom vertrouw je nooit op controles die alleen daar gebeuren."},
+    {q:"Waarom is HTTPS belangrijk?", o:["Het verkeer tussen jou en de website is versleuteld","Het maakt websites sneller","Het blokkeert advertenties"], a:0, e:"Zonder HTTPS kan iemand op hetzelfde netwerk meelezen."}
+   ]},
+  {id:"l2-5", title:"Wireshark: kijk naar je eigen verkeer",
+   intro:"Wireshark laat elk pakket zien dat je computer verstuurt en ontvangt. Kijk alleen naar je eigen verkeer of naar voorbeeldbestanden.",
+   steps:[
+    {t:"Installeer Wireshark", m:10, url:"https://www.wireshark.org/download.html", label:"wireshark.org"},
+    {t:"Neem 1 minuut je eigen verkeer op terwijl je een website opent. Filter op dns en daarna op tcp", m:25},
+    {t:"Open een voorbeeldopname van de Wireshark-wiki en zoek de DNS-verzoeken en een TCP-handshake", m:20, url:"https://wiki.wireshark.org/SampleCaptures", label:"Wireshark-wiki"}
+   ],
+   quiz:[
+    {q:"Welk filter toont in Wireshark alleen DNS-verkeer?", o:["dns","show dns","filter:dns","port"], a:0, e:"Je typt het filter in de balk bovenaan. Probeer ook http, tcp en ip.addr == 192.168.1.1."},
+    {q:"Waarom zie je de inhoud van HTTPS-verkeer niet in Wireshark?", o:["Het verkeer is versleuteld","Wireshark ondersteunt geen HTTPS","HTTPS gebruikt geen pakketten"], a:0, e:"Je ziet wel met welk adres je praat, maar niet wat er gezegd wordt."}
+   ]}
+ ]},
+ {title:"Python", blurb:"Scripts lezen en schrijven. Je gebruikt het later om taken te automatiseren.", lessons:[
+  {id:"l3-1", title:"De eerste stappen",
+   intro:"Python for Everybody is een gratis cursus met video's en tekst. Typ alle voorbeelden zelf na in VS Code.",
+   steps:[
+    {t:"Volg Python for Everybody hoofdstuk 1 en 2", m:30, url:"https://www.py4e.com/lessons", label:"py4e.com"},
+    {t:"Schrijf een script dat je naam vraagt en je begroet", m:20}
+   ],
+   quiz:[
+    {q:"Wat print print(3 * '3')?", o:["333","9","33","Een foutmelding"], a:0, e:"Een string keer een getal herhaalt de string."},
+    {q:"Wat is een variabele?", o:["Een naam die naar een waarde verwijst","Een soort foutmelding","Een Python-bibliotheek"], a:0, e:"Bijvoorbeeld naam = 'Sam' bewaart de tekst Sam onder de naam naam."}
+   ]},
+  {id:"l3-2", title:"Voorwaarden, lussen en functies",
+   intro:"Met if, for en functies kun je echte logica bouwen.",
+   steps:[
+    {t:"Volg Python for Everybody hoofdstuk 3 tot en met 5", m:40, url:"https://www.py4e.com/lessons", label:"py4e.com"},
+    {t:"Schrijf een functie die controleert of een getal even is", m:15}
+   ],
+   quiz:[
+    {q:"Wat doet een for-lus?", o:["Code herhalen voor elk element in een reeks","Het programma stoppen","Een bestand openen"], a:0, e:"for regel in bestand: is een veelgebruikte manier om een bestand regel voor regel te lezen."},
+    {q:"Wat geeft len('hack') terug?", o:["4","3","5","hack"], a:0, e:"len telt het aantal tekens."}
+   ]},
+  {id:"l3-3", title:"Strings en bestanden",
+   intro:"Tekst bewerken en bestanden lezen. Dat is de basis voor elk analysescript.",
+   steps:[
+    {t:"Volg Python for Everybody hoofdstuk 6 en 7", m:40, url:"https://www.py4e.com/lessons", label:"py4e.com"},
+    {t:"Schrijf een script dat een tekstbestand inleest en het aantal regels telt", m:20}
+   ],
+   quiz:[
+    {q:"Wat geeft 'Hallo'.lower() terug?", o:["'hallo'","'HALLO'","'Hallo'","Een foutmelding"], a:0, e:"lower() maakt alle letters klein. Handig om tekst te vergelijken."},
+    {q:"Waarom gebruik je with open(...) as f:?", o:["Het bestand wordt na afloop automatisch gesloten","Het bestand wordt versleuteld","Het leest sneller"], a:0, e:"Zo vergeet je nooit een bestand te sluiten, ook niet als er een fout optreedt."}
+   ]},
+  {id:"l3-4", title:"Lijsten en dictionaries",
+   intro:"Gegevens verzamelen en tellen. Dictionaries gebruik je straks om IP-adressen te tellen.",
+   steps:[
+    {t:"Volg Python for Everybody hoofdstuk 8 en 9", m:45, url:"https://www.py4e.com/lessons", label:"py4e.com"},
+    {t:"Maak een dictionary die telt hoe vaak elk woord in een zin voorkomt", m:15}
+   ],
+   quiz:[
+    {q:"Hoe haal je de waarde van de sleutel 'ip' uit dictionary d?", o:["d['ip']","d.ip()","d(ip)","ip[d]"], a:0, e:"d.get('ip') werkt ook, en geeft None als de sleutel niet bestaat."},
+    {q:"Welke index heeft het eerste element van [10, 20, 30]?", o:["0","1","-0"], a:0, e:"Python begint bij 0 te tellen. Index -1 is het laatste element."}
+   ]},
+  {id:"l3-5", title:"Mini-project: logboek-analyse",
+   intro:"Verdedigers zoeken in logbestanden naar verdachte inlogpogingen. Je schrijft een script dat dat voor je telt. Een nep-logbestand om mee te oefenen staat in notities/voorbeeld-auth.log.",
+   steps:[
+    {t:"Open notities/voorbeeld-auth.log en zoek de regels met Failed password", m:10},
+    {t:"Schrijf een script dat per IP-adres telt hoeveel mislukte pogingen er zijn", m:35},
+    {t:"Laat het script de top 3 IP-adressen tonen en zet het in je repo", m:15}
+   ],
+   quiz:[
+    {q:"Eén IP-adres doet 300 mislukte inlogpogingen in 5 minuten. Wat is dit waarschijnlijk?", o:["Een geautomatiseerde aanval die wachtwoorden probeert","Iemand die zijn wachtwoord vergeten is","Een normale back-up"], a:0, e:"Dat heet een brute-force-aanval. Mensen typen niet zo snel."},
+    {q:"Hoe bescherm je een server tegen zulke aanvallen?", o:["Inloggen met SSH-sleutels en het aantal pogingen beperken","De server vaker herstarten","Het logbestand verwijderen"], a:0, e:"Tools zoals fail2ban blokkeren een IP-adres automatisch na te veel mislukte pogingen."}
+   ]},
+  {id:"l3-6", title:"Mini-project: wachtwoordchecker",
+   intro:"Schrijf een script dat beoordeelt hoe sterk een wachtwoord is. Zo leer je waarom lengte belangrijker is dan rare tekens.",
+   steps:[
+    {t:"Schrijf een functie die punten geeft voor lengte, hoofdletters, cijfers en leestekens", m:30},
+    {t:"Voeg een controle toe tegen een lijstje veelgebruikte wachtwoorden dat je zelf maakt", m:20},
+    {t:"Zet het script in je repo met een korte README", m:10}
+   ],
+   quiz:[
+    {q:"Welk wachtwoord is het sterkst?", o:["fiets-lantaarn-wolk-zebra-73","P@ssw0rd!","Zomer2024","Qx7!"], a:0, e:"Lengte wint. Een lange reeks willekeurige woorden is sterk en toch te onthouden."},
+    {q:"Wat is de beste manier om voor elke site een ander sterk wachtwoord te hebben?", o:["Een wachtwoordmanager gebruiken","Alles op een briefje schrijven","Overal hetzelfde wachtwoord met een ander cijfer"], a:0, e:"Een wachtwoordmanager maakt en onthoudt lange, unieke wachtwoorden voor je."}
+   ]}
+ ]},
+ {title:"Het web van binnenuit", blurb:"HTTP, cookies, databases en de bekendste soorten fouten in webapplicaties.", lessons:[
+  {id:"l4-1", title:"HTTP onder de loep",
+   intro:"Elke klik op een website is een HTTP-verzoek met een antwoord. Je leert die verzoeken lezen.",
+   steps:[
+    {t:"Lees het MDN-overzicht van HTTP", m:25, url:"https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview", label:"MDN"},
+    {t:"Bekijk in DevTools (F12, tabblad Netwerk) van een verzoek de methode, statuscode en headers", m:20}
+   ],
+   quiz:[
+    {q:"Wat is het verschil tussen GET en POST?", o:["GET haalt iets op, POST stuurt gegevens naar de server","POST is altijd versleuteld","GET werkt alleen bij afbeeldingen"], a:0, e:"Een inlogformulier gebruikt meestal POST, het openen van een pagina GET."},
+    {q:"Hoe zet een server een cookie in je browser?", o:["Met de Set-Cookie-header in het antwoord","Via de URL","Via de titel van de pagina"], a:0, e:"Je browser stuurt de cookie daarna bij elk verzoek mee in de Cookie-header."}
+   ]},
+  {id:"l4-2", title:"Cookies en sessies",
+   intro:"Hoe weet een website dat jij bent ingelogd? Met een sessiecookie. Daarom zijn cookies zo waardevol voor aanvallers.",
+   steps:[
+    {t:"Lees de MDN-uitleg over cookies", m:25, url:"https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies", label:"MDN"},
+    {t:"Bekijk in DevTools (Opslag of Application, dan Cookies) welke cookies een site bij jou zet", m:15}
+   ],
+   quiz:[
+    {q:"Waarvoor gebruiken websites vaak een sessiecookie?", o:["Onthouden dat je bent ingelogd","De website sneller laden","Je IP-adres verbergen"], a:0, e:"Wie je sessiecookie heeft, is voor de website jou. Daarom moet hij goed beschermd zijn."},
+    {q:"Wat doet de cookie-instelling HttpOnly?", o:["JavaScript kan de cookie niet uitlezen","De cookie werkt niet via HTTPS","De cookie verloopt na één uur"], a:0, e:"Dat beperkt de schade als iemand toch JavaScript op de pagina weet te krijgen (XSS)."}
+   ]},
+  {id:"l4-3", title:"SQL-basis",
+   intro:"Bijna elke website heeft een database. SQLBolt leert je SQL met korte, interactieve lessen.",
+   steps:[
+    {t:"Doe SQLBolt les 1 tot en met 6", m:30, url:"https://sqlbolt.com/", label:"SQLBolt"},
+    {t:"Doe SQLBolt les 7 tot en met 12", m:30, url:"https://sqlbolt.com/", label:"SQLBolt"}
+   ],
+   quiz:[
+    {q:"Wat doet SELECT * FROM users WHERE id = 5?", o:["Alle kolommen ophalen van de gebruiker met id 5","Gebruiker 5 verwijderen","Een nieuwe gebruiker aanmaken"], a:0, e:"* betekent alle kolommen, WHERE filtert de rijen."},
+    {q:"Waarvoor dient WHERE in een query?", o:["Rijen filteren","Kolommen sorteren","Een tabel aanmaken"], a:0, e:"Sorteren doe je met ORDER BY."}
+   ]},
+  {id:"l4-4", title:"OWASP Top 10",
+   intro:"De OWASP Top 10 is de bekendste lijst van de grootste risico's in webapplicaties. Ontwikkelaars en securitytesters gebruiken hem allebei.",
+   steps:[
+    {t:"Lees de inleiding en de lijst op de OWASP-site", m:25, url:"https://owasp.org/www-project-top-ten/", label:"OWASP"},
+    {t:"Kies 3 risico's en leg ze in je notities in je eigen woorden uit", m:25}
+   ],
+   quiz:[
+    {q:"Wat is Broken Access Control?", o:["Gebruikers kunnen bij gegevens of functies waar ze geen recht op hebben","De website is offline","Het wachtwoord is te kort"], a:0, e:"Het staat al jaren bovenaan de lijst omdat het zo vaak voorkomt."},
+    {q:"Voor wie is de OWASP Top 10 vooral bedoeld?", o:["Ontwikkelaars en securitymensen, om webapps veiliger te maken","Alleen voor criminelen","Netwerkbeheerders van routers"], a:0, e:"OWASP is een open community die software veiliger wil maken."}
+   ]}
+ ]},
+ {title:"Websecurity met PortSwigger", blurb:"De gratis Web Security Academy, met labs die speciaal gemaakt zijn om te oefenen.", lessons:[
+  {id:"l5-1", title:"Burp Suite leren kennen",
+   intro:"Burp Suite zit tussen je browser en de website en laat elk verzoek zien. Gebruik het alleen op de PortSwigger-labs en in je eigen lab.",
+   steps:[
+    {t:"Installeer Burp Suite Community Edition (gratis)", m:15, url:"https://portswigger.net/burp/communitydownload", label:"PortSwigger"},
+    {t:"Open de ingebouwde browser van Burp, bezoek de Academy en bekijk de verzoeken onder Proxy, HTTP history", m:30, url:PS, label:"Academy"}
+   ],
+   quiz:[
+    {q:"Wat doet een intercepting proxy zoals Burp?", o:["Verkeer tussen browser en server tonen en aanpassen","Je IP-adres verbergen","Websites versnellen"], a:0, e:"Zo zie je precies wat je browser naar de server stuurt."},
+    {q:"Waar mag je Burp op gebruiken?", o:["Op oefenlabs en systemen waarvoor je toestemming hebt","Op elke website","Alleen op zoekmachines"], a:0, e:"Burp is een normaal hulpmiddel voor testers, maar toestemming blijft nodig."}
+   ]},
+  {id:"l5-2", title:"SQL-injectie",
+   intro:"Een van de bekendste webkwetsbaarheden. Je leert hoe het ontstaat en hoe ontwikkelaars het voorkomen.",
+   steps:[
+    {t:"Lees de theorie over SQL-injectie", m:25, url:PS+"sql-injection", label:"Academy"},
+    {t:"Los de eerste twee labs op niveau Apprentice op", m:35, url:PS+"sql-injection", label:"Academy"}
+   ],
+   quiz:[
+    {q:"Wat is de oorzaak van SQL-injectie?", o:["Invoer van gebruikers wordt rechtstreeks in een SQL-query geplakt","De database is te groot","De server gebruikt geen HTTPS"], a:0, e:"De database kan dan geen verschil meer zien tussen code en invoer."},
+    {q:"Wat is de beste verdediging tegen SQL-injectie?", o:["Parameterized queries (prepared statements)","Een langer wachtwoord voor de database","Foutmeldingen een andere kleur geven"], a:0, e:"Bij prepared statements blijft invoer altijd gewone data."}
+   ]},
+  {id:"l5-3", title:"Cross-site scripting (XSS)",
+   intro:"Bij XSS komt code van een aanvaller in de pagina van een ander terecht. Je leert de soorten herkennen.",
+   steps:[
+    {t:"Lees de theorie over cross-site scripting", m:25, url:PS+"cross-site-scripting", label:"Academy"},
+    {t:"Los de eerste twee labs op niveau Apprentice op", m:35, url:PS+"cross-site-scripting", label:"Academy"}
+   ],
+   quiz:[
+    {q:"Wat gebeurt er bij XSS?", o:["Een aanvaller laat eigen JavaScript draaien in de browser van een ander","De server crasht","De database wordt gewist"], a:0, e:"Daarmee kan een aanvaller bijvoorbeeld handelingen uitvoeren namens het slachtoffer."},
+    {q:"Wat helpt tegen XSS?", o:["Uitvoer correct encoderen en een Content Security Policy gebruiken","Een snellere server","Cookies uitzetten"], a:0, e:"Moderne frameworks encoderen uitvoer standaard. Fouten ontstaan vaak als dat wordt omzeild."}
+   ]},
+  {id:"l5-4", title:"Authenticatie",
+   intro:"Hoe controleert een website wie je bent, en wat kan daarbij misgaan?",
+   steps:[
+    {t:"Lees de theorie over authenticatie", m:25, url:PS+"authentication", label:"Academy"},
+    {t:"Los de eerste twee labs op niveau Apprentice op", m:35, url:PS+"authentication", label:"Academy"}
+   ],
+   quiz:[
+    {q:"Waarom is de foutmelding 'deze gebruikersnaam bestaat niet' een risico?", o:["Een aanvaller kan zo uitzoeken welke accounts bestaan","Het kost de server extra tijd","Het is slecht voor zoekmachines"], a:0, e:"Beter is één algemene melding: gebruikersnaam of wachtwoord onjuist."},
+    {q:"Wat maakt inloggen veel veiliger?", o:["Tweestapsverificatie (2FA)","Een kortere naam voor de sessiecookie","Inloggen via HTTP"], a:0, e:"Met 2FA is een gestolen wachtwoord alleen niet genoeg."}
+   ]},
+  {id:"l5-5", title:"Toegangscontrole",
+   intro:"Mag deze gebruiker dit wel zien of doen? Als de website dat vergeet te controleren, gaat het mis.",
+   steps:[
+    {t:"Lees de theorie over access control", m:25, url:PS+"access-control", label:"Academy"},
+    {t:"Los de eerste twee labs op niveau Apprentice op", m:35, url:PS+"access-control", label:"Academy"}
+   ],
+   quiz:[
+    {q:"In een lab zie je /account?id=1001. Wat test je bij toegangscontrole?", o:["Of je met een ander id gegevens van een andere gebruiker ziet","Of de pagina sneller laadt","Of de kleur verandert"], a:0, e:"Dit heet IDOR. Test dit alleen in labs of met toestemming."},
+    {q:"Waar moet toegangscontrole altijd gebeuren?", o:["Op de server","Alleen in JavaScript in de browser","In de URL"], a:0, e:"Alles in de browser kan de gebruiker aanpassen."}
+   ]},
+  {id:"l5-6", title:"Path traversal",
+   intro:"Soms kan een gebruiker via een bestandsnaam bij bestanden komen die niet bedoeld zijn om te delen.",
+   steps:[
+    {t:"Lees de theorie over path traversal", m:20, url:PS+"file-path-traversal", label:"Academy"},
+    {t:"Los het eerste lab op niveau Apprentice op", m:30, url:PS+"file-path-traversal", label:"Academy"}
+   ],
+   quiz:[
+    {q:"Wat probeert een aanvaller bij path traversal?", o:["Bestanden buiten de bedoelde map lezen","Een wachtwoord raden","Een e-mail vervalsen"], a:0, e:"Bijvoorbeeld configuratiebestanden van de server."},
+    {q:"Hoe voorkom je path traversal?", o:["Gebruikersinvoer niet direct in bestandspaden gebruiken en paden controleren","Bestanden een langere naam geven","Alleen afbeeldingen toestaan"], a:0, e:"Het veiligst is een vaste lijst met toegestane bestanden."}
+   ]},
+  {id:"l5-7", title:"Kijken als een ontwikkelaar",
+   intro:"Elke aanval heeft een verdediging. Als je weet hoe ontwikkelaars fouten voorkomen, word je een betere tester.",
+   steps:[
+    {t:"Lees in de OWASP Cheat Sheet Series de SQL Injection Prevention Cheat Sheet", m:25, url:"https://cheatsheetseries.owasp.org/", label:"OWASP"},
+    {t:"Schrijf per kwetsbaarheid uit deze unit in één zin de verdediging op", m:20}
+   ],
+   quiz:[
+    {q:"Welk principe helpt tegen veel soorten injectie?", o:["Gebruikersinvoer nooit vertrouwen: controleren en veilig verwerken","Een captcha","Een donker thema"], a:0, e:"Bijna elke webkwetsbaarheid begint bij invoer die te veel vertrouwd wordt."},
+    {q:"Wat is least privilege?", o:["Gebruikers en programma's krijgen alleen de rechten die ze echt nodig hebben","Iedereen krijgt adminrechten","Wachtwoorden zo kort mogelijk maken"], a:0, e:"Als er toch iets misgaat, blijft de schade dan beperkt."}
+   ]}
+ ]},
+ {title:"Je eigen lab", blurb:"Een veilige plek op je eigen computer waar alles mag.", lessons:[
+  {id:"l6-1", title:"Virtuele machines",
+   intro:"Een virtuele machine (VM) is een computer in je computer. Gaat er iets mis, dan zet je hem gewoon terug.",
+   steps:[
+    {t:"Installeer VirtualBox (Mac met M-chip: zie SETUP.md)", m:20, url:"https://www.virtualbox.org/wiki/Downloads", label:"virtualbox.org"},
+    {t:"Zoek uit wat snapshots zijn en hoe je er een maakt", m:10},
+    {t:"Maak in VirtualBox een Host-only netwerk aan voor je oefen-VM's", m:15}
+   ],
+   quiz:[
+    {q:"Waarom maak je een snapshot van een VM?", o:["Om de VM terug te kunnen zetten naar een eerdere toestand","Om een screenshot te maken","Om internet sneller te maken"], a:0, e:"Maak altijd een snapshot voordat je iets spannends probeert."},
+    {q:"Waarom zet je bewust kwetsbare oefen-VM's in een afgeschermd netwerk?", o:["Zodat ze niet bereikbaar zijn vanaf internet of je thuisnetwerk","Zodat ze sneller zijn","Dat hoeft niet"], a:0, e:"Kwetsbare software hoort nooit open op internet te staan."}
+   ]},
+  {id:"l6-2", title:"Kali Linux installeren",
+   intro:"Kali is een Linux-versie met veel securitytools. Je draait hem als VM, naast je gewone systeem.",
+   steps:[
+    {t:"Download het kant-en-klare VirtualBox-image van Kali (kies ARM64 bij een Mac met M-chip)", m:15, url:"https://www.kali.org/get-kali/", label:"kali.org"},
+    {t:"Importeer de VM, log in en installeer de updates", m:30},
+    {t:"Maak een snapshot met de naam schone installatie", m:5}
+   ],
+   quiz:[
+    {q:"Wat is Kali Linux?", o:["Een Linux-versie met securitytools, bedoeld om te testen en te leren","Een virus","Een programmeertaal"], a:0, e:"De tools zijn hetzelfde als die professionals gebruiken. Toestemming blijft dus nodig."},
+    {q:"Waarom update je meteen na de installatie?", o:["Om de nieuwste beveiligingsupdates en tools te krijgen","Om de VM groter te maken","Dat is niet nodig"], a:0, e:"Ook je eigen lab-machine moet veilig blijven."}
+   ]},
+  {id:"l6-3", title:"OWASP Juice Shop draaien",
+   intro:"Juice Shop is een webshop vol bewuste fouten, gemaakt om veilig te oefenen. Hij draait alleen op je eigen computer.",
+   steps:[
+    {t:"Lees de installatie-opties op de Juice Shop-pagina en kies Docker of Node.js", m:15, url:"https://owasp.org/www-project-juice-shop/", label:"OWASP"},
+    {t:"Start Juice Shop en open hem in je browser op http://localhost:3000", m:25},
+    {t:"Lees in de officiële companion guide hoe het scorebord werkt en zoek het op", m:15, url:"https://pwning.owasp-juice.shop/", label:"Companion guide"}
+   ],
+   quiz:[
+    {q:"Waarom draai je Juice Shop op localhost?", o:["Dan is hij alleen bereikbaar vanaf je eigen computer","Omdat het sneller is dan internet","Dat moet van de wet"], a:0, e:"Zo kan niemand anders bij je kwetsbare oefenshop."},
+    {q:"Wat is een bewust kwetsbare applicatie?", o:["Software met expres ingebouwde fouten om veilig te oefenen","Een app met een virus","Een kapotte app"], a:0, e:"Andere voorbeelden zijn DVWA en de labs van PortSwigger."}
+   ]},
+  {id:"l6-4", title:"Nmap in je eigen lab",
+   intro:"Nmap ontdekt welke apparaten en diensten er in een netwerk zijn. Scan alleen je eigen lab, of scanme.nmap.org, waarvoor de makers toestemming geven.",
+   steps:[
+    {t:"Lees de inleiding van de Nmap-handleiding", m:20, url:"https://nmap.org/book/man.html", label:"nmap.org"},
+    {t:"Scan vanaf Kali je eigen Host-only labnetwerk en noteer welke poorten open staan", m:25},
+    {t:"Zoek op welke dienst bij elke open poort hoort", m:10}
+   ],
+   quiz:[
+    {q:"Wat betekent het als poort 80 open is?", o:["Er luistert een dienst, vaak een webserver","De computer is gehackt","De firewall staat uit"], a:0, e:"Open betekent alleen dat er iets luistert. Of het kwetsbaar is, is een andere vraag."},
+    {q:"Mag je het netwerk van je school of werk scannen?", o:["Alleen met schriftelijke toestemming van de beheerder","Ja, als je niets aanpast","Ja, scannen is altijd toegestaan"], a:0, e:"Ook een scan zonder toestemming kan je in de problemen brengen. Blijf in je eigen lab."}
+   ]},
+  {id:"l6-5", title:"Juice Shop: eerste uitdagingen",
+   intro:"Nu gebruik je wat je in unit 4 en 5 leerde, in je eigen lab.",
+   steps:[
+    {t:"Los twee uitdagingen van 1 ster op", m:30},
+    {t:"Los één uitdaging van 2 sterren op", m:25},
+    {t:"Schrijf een korte write-up van je favoriete uitdaging", m:15}
+   ],
+   quiz:[
+    {q:"Wat houdt het scorebord van Juice Shop bij?", o:["Welke uitdagingen je hebt opgelost","Hoeveel bezoekers de shop heeft","De snelheid van je computer"], a:0, e:"Elke opgeloste uitdaging kleurt groen."},
+    {q:"Wat doe je als je vastzit?", o:["Een hint lezen in de companion guide en daarna zelf verder proberen","Meteen de hele oplossing overnemen","Opgeven"], a:0, e:"Kleine hints houden het leerzaam. Een volledige oplossing leer je meestal weinig van."}
+   ]}
+ ]},
+ {title:"Cryptografie", blurb:"Encoding, hashing en encryptie: wat beschermt wel en wat niet?", lessons:[
+  {id:"l7-1", title:"Encoding, hashing en encryptie",
+   intro:"Drie woorden die vaak door elkaar worden gehaald. CyberChef is een gratis webtool waarmee je ermee kunt spelen.",
+   steps:[
+    {t:"Zet in CyberChef tekst om naar Base64 en terug, en maak een SHA-256-hash", m:25, url:"https://gchq.github.io/CyberChef/", label:"CyberChef"},
+    {t:"Schrijf in je notities het verschil tussen encoding, hashing en encryptie", m:15}
+   ],
+   quiz:[
+    {q:"Welke kun je NIET terugdraaien?", o:["Een hash","Base64","Encryptie, als je de sleutel hebt"], a:0, e:"Een hash werkt maar één kant op. Daarom worden wachtwoorden gehasht opgeslagen."},
+    {q:"Wat is het verschil tussen encryptie en encoding?", o:["Encryptie heeft een geheime sleutel nodig, encoding niet","Encoding is veiliger","Er is geen verschil"], a:0, e:"Encoding verandert alleen de vorm. Encryptie maakt het geheim."}
+   ]},
+  {id:"l7-2", title:"CryptoHack: introductie",
+   intro:"CryptoHack leert je cryptografie met puzzels. Gratis en goed opgebouwd.",
+   steps:[
+    {t:"Maak een gratis account en doe de introductiecursus", m:35, url:"https://cryptohack.org/", label:"CryptoHack"},
+    {t:"Doe de eerste uitdagingen uit de categorie General", m:25, url:"https://cryptohack.org/", label:"CryptoHack"}
+   ],
+   quiz:[
+    {q:"Wat is XOR?", o:["Een bewerking op bits die je met dezelfde sleutel weer omdraait","Een soort virus","Een hashfunctie"], a:0, e:"XOR zit in bijna alle moderne encryptie verwerkt."},
+    {q:"Wat is een flag in een CTF?", o:["Een geheime tekst die bewijst dat je de uitdaging hebt opgelost","Een foutmelding","Een landenvlag"], a:0, e:"Vaak iets als crypto{...} of picoCTF{...}."}
+   ]},
+  {id:"l7-3", title:"Wachtwoorden veilig opslaan",
+   intro:"Websites horen wachtwoorden nooit als gewone tekst op te slaan. Je leert hoe het wel moet, en je beveiligt meteen je eigen accounts.",
+   steps:[
+    {t:"Lees in de OWASP Cheat Sheet Series de Password Storage Cheat Sheet", m:25, url:"https://cheatsheetseries.owasp.org/", label:"OWASP"},
+    {t:"Zet tweestapsverificatie aan op je belangrijkste accounts, zoals je e-mail en GitHub", m:20},
+    {t:"Bekijk of een wachtwoordmanager iets voor je is (Bitwarden heeft een gratis versie)", m:10, url:"https://bitwarden.com/", label:"Bitwarden"}
+   ],
+   quiz:[
+    {q:"Wat is een salt?", o:["Een willekeurige waarde die per wachtwoord wordt toegevoegd voor het hashen","Een encryptiesleutel die je deelt","Een extra wachtwoord voor de beheerder"], a:0, e:"Door de salt krijgen twee mensen met hetzelfde wachtwoord toch een andere hash."},
+    {q:"Waarom is MD5 ongeschikt voor wachtwoorden?", o:["Het is veel te snel, dus aanvallers kunnen heel veel gokken","Het is te langzaam","Het werkt niet op Linux"], a:0, e:"Gebruik voor wachtwoorden speciale, langzame functies zoals Argon2 of bcrypt."}
+   ]}
+ ]},
+ {title:"Capture the Flag", blurb:"Puzzels oplossen in wedstrijdvorm. Hier komt alles samen.", lessons:[
+  {id:"l8-1", title:"picoCTF: General Skills",
+   intro:"picoCTF is een gratis CTF-platform voor beginners, gemaakt door Carnegie Mellon University.",
+   steps:[
+    {t:"Maak een gratis account op picoCTF", m:5, url:"https://picoctf.org/", label:"picoCTF"},
+    {t:"Los 3 uitdagingen op uit de categorie General Skills", m:45, url:"https://play.picoctf.org/practice", label:"picoGym"}
+   ],
+   quiz:[
+    {q:"Wat is een CTF?", o:["Een wedstrijd waarin je in een veilige omgeving puzzels en kwetsbaarheden oplost","Een soort virus","Een programmeertaal"], a:0, e:"CTF staat voor Capture the Flag."},
+    {q:"Wat doe je als je een uur vastzit op één uitdaging?", o:["Even een andere uitdaging kiezen en later terugkomen","Stoppen met leren","Het antwoord van iemand anders overnemen zonder het te begrijpen"], a:0, e:"Vaak valt het kwartje juist als je er even niet mee bezig bent."}
+   ]},
+  {id:"l8-2", title:"picoCTF: Web Exploitation",
+   intro:"Web-uitdagingen in wedstrijdvorm. Je gebruikt wat je in unit 4 en 5 leerde.",
+   steps:[
+    {t:"Los 2 makkelijke uitdagingen op uit Web Exploitation", m:45, url:"https://play.picoctf.org/practice", label:"picoGym"},
+    {t:"Noteer welke kennis uit unit 4 en 5 je gebruikte", m:10}
+   ],
+   quiz:[
+    {q:"Waar kijk je als eerste bij een web-uitdaging?", o:["De broncode van de pagina en de verzoeken in DevTools","De prijs van de server","De kleuren van de website"], a:0, e:"Veel beginnersuitdagingen verstoppen hints in de broncode of in cookies."},
+    {q:"Waarom mag je de servers van picoCTF wel aanvallen?", o:["Ze zijn daarvoor gemaakt en de organisatie geeft toestemming","Omdat ze slecht beveiligd zijn","Omdat het een buitenlandse site is"], a:0, e:"Lees altijd de regels: aanvallen op de infrastructuur van het platform zelf zijn niet toegestaan."}
+   ]},
+  {id:"l8-3", title:"picoCTF: Forensics en Cryptography",
+   intro:"Verborgen informatie in bestanden vinden en codes kraken.",
+   steps:[
+    {t:"Los 2 uitdagingen op uit Forensics", m:30, url:"https://play.picoctf.org/practice", label:"picoGym"},
+    {t:"Los 2 uitdagingen op uit Cryptography", m:30, url:"https://play.picoctf.org/practice", label:"picoGym"}
+   ],
+   quiz:[
+    {q:"Wat is metadata van een foto?", o:["Extra informatie zoals datum, camera en soms de locatie","De kleuren van de foto","Alleen de bestandsnaam"], a:0, e:"Let daarop als je zelf foto's online zet."},
+    {q:"Welk gratis webprogramma is handig voor decoderen?", o:["CyberChef","Paint","Een rekenmachine"], a:0, e:"De Magic-functie van CyberChef raadt zelfs welke codering is gebruikt."}
+   ]},
+  {id:"l8-4", title:"Je eerste echte write-up",
+   intro:"Een goede write-up helpt jezelf later, en laat anderen zien wat je kunt.",
+   steps:[
+    {t:"Kies je mooiste opgeloste uitdaging en schrijf een write-up met het template", m:40},
+    {t:"Commit en push de write-up naar je repo", m:10}
+   ],
+   quiz:[
+    {q:"Mag je een write-up publiceren van een CTF die nog bezig is?", o:["Nee, wacht tot de wedstrijd voorbij is","Ja, altijd","Alleen op social media"], a:0, e:"Bij picoGym-oefeningen houden veel mensen hun write-ups ook privé, zodat anderen het zelf kunnen ontdekken."},
+    {q:"Wat maakt een write-up nuttig?", o:["Je denkproces, ook wat niet werkte","Alleen de flag","Zo kort mogelijk"], a:0, e:"Wat niet werkte leert je vaak het meest."}
+   ]},
+  {id:"l8-5", title:"Meedoen aan een echte CTF",
+   intro:"Op CTFtime staan wedstrijden van over de hele wereld, ook voor beginners. Veel CTF's zijn in het weekend.",
+   steps:[
+    {t:"Zoek op CTFtime een CTF voor beginners in de komende weken", m:15, url:"https://ctftime.org/", label:"CTFtime"},
+    {t:"Doe mee (alleen of in een team) en probeer minstens 2 uitdagingen", m:60}
+   ],
+   quiz:[
+    {q:"Wat is een jeopardy-CTF?", o:["Losse uitdagingen in categorieën, elk met punten","Een quiz op televisie","Een wedstrijd waarin je systemen moet verdedigen"], a:0, e:"De andere vorm heet attack-defense: daar verdedig je je eigen systemen."},
+    {q:"Waarom is meedoen in een team handig?", o:["Iedereen heeft andere sterke punten en je leert van elkaar","Dan hoef je zelf niets te doen","Het is verplicht"], a:0, e:"Veel teams zoeken nieuwe leden. Vraag rond in CTF-communities."}
+   ]}
+ ]},
+ {title:"Verdedigen", blurb:"Wie aanvallen begrijpt, kan beter verdedigen. Hier draai je het om.", lessons:[
+  {id:"l9-1", title:"Logs lezen op je eigen VM",
+   intro:"Verdedigers lezen logs om te zien wat er gebeurd is. Je oefent op je eigen Kali-VM.",
+   steps:[
+    {t:"Bekijk op je Kali-VM met journalctl en in /var/log welke gebeurtenissen er gelogd worden", m:25},
+    {t:"Log een paar keer in met een fout wachtwoord en zoek die pogingen terug in de logs", m:20}
+   ],
+   quiz:[
+    {q:"Waarom zijn logs belangrijk voor verdedigers?", o:["Ze laten zien wat er is gebeurd, ook bij een aanval","Ze maken de computer sneller","Ze vervangen een virusscanner"], a:0, e:"Zonder logs weet je na een incident niet wat er is misgegaan."},
+    {q:"Waarom sturen bedrijven logs vaak door naar een aparte server?", o:["Een aanvaller kan logs op de getroffen machine wissen","Om ruimte te besparen","Dat is wettelijk verplicht"], a:0, e:"Zo blijven de sporen bewaard, ook als een machine is overgenomen."}
+   ]},
+  {id:"l9-2", title:"Netwerkverkeer analyseren",
+   intro:"Je gebruikt Wireshark nu als verdediger: wat gebeurt er in deze opname?",
+   steps:[
+    {t:"Download een voorbeeldopname van de Wireshark-wiki", m:10, url:"https://wiki.wireshark.org/SampleCaptures", label:"Wireshark-wiki"},
+    {t:"Zoek uit welke apparaten met elkaar praten via Statistics, Conversations", m:25},
+    {t:"Schrijf op wat je opvalt en wat je nog niet begrijpt", m:15}
+   ],
+   quiz:[
+    {q:"Wat laat Statistics, Conversations in Wireshark zien?", o:["Welke adressen met elkaar communiceren en hoeveel","De wachtwoorden van gebruikers","De snelheid van je internet"], a:0, e:"Een snelle manier om overzicht te krijgen in een grote opname."},
+    {q:"Wat is verdacht in netwerkverkeer?", o:["Veel verbindingen naar een onbekend adres op vreemde tijden","Een DNS-verzoek naar een bekende zoekmachine","Verkeer naar je eigen router"], a:0, e:"Verdedigers zoeken naar afwijkingen van het normale patroon."}
+   ]},
+  {id:"l9-3", title:"De SOC-analist",
+   intro:"Een SOC (Security Operations Center) bewaakt netwerken en reageert op incidenten. TryHackMe heeft hier een leerpad voor. Doe alleen de gratis rooms.",
+   steps:[
+    {t:"Bekijk het SOC Level 1-pad en doe de eerste gratis room", m:45, url:"https://tryhackme.com/path/outline/soclevel1", label:"TryHackMe"},
+    {t:"Noteer wat een SOC-analist op een gewone werkdag doet", m:10}
+   ],
+   quiz:[
+    {q:"Wat doet een SOC?", o:["Netwerken bewaken en reageren op beveiligingsincidenten","Websites ontwerpen","Hardware repareren"], a:0, e:"Veel securitymensen beginnen hun carrière als SOC-analist."},
+    {q:"Wat is phishing?", o:["Een nepbericht dat je probeert te misleiden om gegevens of geld te geven","Een soort firewall","Een netwerkprotocol"], a:0, e:"Phishing is nog steeds een van de meest gebruikte manieren om binnen te komen."}
+   ]},
+  {id:"l9-4", title:"Je eigen spullen beveiligen",
+   intro:"Pas toe wat je geleerd hebt op je eigen apparaten en accounts.",
+   steps:[
+    {t:"Controleer of je router de nieuwste firmware heeft en verander het standaard beheerderswachtwoord", m:20},
+    {t:"Controleer of automatische updates aan staan op je telefoon en computer", m:10},
+    {t:"Zet tweestapsverificatie aan op elk account waar dat nog niet aan staat", m:20}
+   ],
+   quiz:[
+    {q:"Waarom zijn updates zo belangrijk?", o:["Ze dichten bekende beveiligingslekken","Ze maken je apparaat altijd sneller","Ze zijn alleen voor nieuwe functies"], a:0, e:"Veel aanvallen gebruiken lekken waarvoor al lang een update bestaat."},
+    {q:"Welke vorm van tweestapsverificatie is het veiligst?", o:["Een authenticator-app of beveiligingssleutel","Een sms-code","Een beveiligingsvraag zoals de naam van je huisdier"], a:0, e:"Sms is beter dan niets, maar een app of sleutel is lastiger te onderscheppen."}
+   ]}
+ ]},
+ {title:"Het volgende niveau", blurb:"Realistische machines, bug bounty en je eigen richting kiezen.", lessons:[
+  {id:"l10-1", title:"Hack The Box: Starting Point",
+   intro:"Hack The Box heeft realistische oefenmachines. Starting Point begeleidt je stap voor stap. Tier 0 is gratis.",
+   steps:[
+    {t:"Maak een gratis account en lees hoe je met hun oefennetwerk verbindt", m:20, url:"https://www.hackthebox.com/", label:"Hack The Box"},
+    {t:"Speel de eerste machine van Starting Point, Tier 0", m:40, url:"https://www.hackthebox.com/", label:"Hack The Box"}
+   ],
+   quiz:[
+    {q:"Waarom verbind je via een VPN met de labs van Hack The Box?", o:["Zo kom je in hun afgeschermde oefennetwerk","Om anoniem te zijn op internet","Om sneller te downloaden"], a:0, e:"De machines staan in een eigen netwerk, los van internet."},
+    {q:"Wat doe je als eerste bij een nieuwe machine?", o:["Informatie verzamelen: welke poorten en diensten zijn er?","Meteen wachtwoorden raden","De machine herstarten"], a:0, e:"Goed verkennen is het halve werk."}
+   ]},
+  {id:"l10-2", title:"Hack The Box: verder met Tier 0",
+   intro:"Meer machines, meer patronen. Je merkt dat je technieken uit eerdere units terugziet.",
+   steps:[
+    {t:"Speel de tweede machine van Starting Point, Tier 0", m:40, url:"https://www.hackthebox.com/", label:"Hack The Box"},
+    {t:"Schrijf een write-up van beide machines", m:20}
+   ],
+   quiz:[
+    {q:"Wat is enumeratie?", o:["Systematisch in kaart brengen wat je over een doel kunt vinden","Een programmeertaal","Een soort encryptie"], a:0, e:"Hoe beter je enumeratie, hoe sneller je de zwakke plek vindt."},
+    {q:"Waarom maak je ook write-ups van makkelijke machines?", o:["Je ziet patronen terug en bouwt je eigen naslagwerk op","Dat heeft geen zin","Om punten te krijgen"], a:0, e:"Je write-ups worden je persoonlijke handboek."}
+   ]},
+  {id:"l10-3", title:"Bug bounty en melden",
+   intro:"Bedrijven betalen soms beloningen als je netjes een lek meldt, maar alleen binnen hun regels.",
+   steps:[
+    {t:"Bekijk de eerste video's van Hacker101", m:40, url:"https://www.hacker101.com/", label:"Hacker101"},
+    {t:"Lees op een bug bounty-platform de regels (scope) van één programma en noteer wat wel en niet mag", m:20}
+   ],
+   quiz:[
+    {q:"Wat is de scope van een bug bounty-programma?", o:["Welke systemen en soorten tests wel en niet zijn toegestaan","Hoeveel geld je krijgt","De naam van het bedrijf"], a:0, e:"Buiten de scope testen is gewoon hacken zonder toestemming."},
+    {q:"Je vindt een lek buiten de scope. Wat doe je?", o:["Niet verder testen en het eventueel netjes melden via het securitycontact","Het lek gebruiken om meer te vinden","Het verkopen"], a:0, e:"Veel organisaties hebben een security.txt of een meldpagina voor kwetsbaarheden."}
+   ]},
+  {id:"l10-4", title:"Kies je richting",
+   intro:"Je kent nu de basis. Kies wat je het leukst vond en ga daar dieper in.",
+   steps:[
+    {t:"Lees je notities terug: welke unit vond je het leukst?", m:15},
+    {t:"Kies een richting (web, netwerk, verdedigen, reverse engineering of cloud) en zoek een gratis vervolgcursus", m:30},
+    {t:"Vraag Claude om een nieuw leerpad voor die richting", m:10}
+   ],
+   quiz:[
+    {q:"Wat doet een reverse engineer?", o:["Software uit elkaar halen om te begrijpen hoe die werkt","Websites bouwen","Netwerkkabels leggen"], a:0, e:"Bijvoorbeeld om malware te analyseren. Ghidra is daarvoor een gratis tool."},
+    {q:"Wat is de beste manier om te blijven groeien?", o:["Regelmatig oefenen, write-ups maken en kennis delen","Alleen video's kijken","Alle tools uit je hoofd leren"], a:0, e:"Precies wat je de afgelopen weken hebt gedaan."}
+   ]}
+ ]}
+];
+
+var TOOLS = [
+ {id:"vscode", name:"VS Code", what:"Teksteditor voor je notities en Python-scripts.", when:"Unit 0", url:"https://code.visualstudio.com/"},
+ {id:"python", name:"Python 3", what:"Programmeertaal voor je eigen scripts.", when:"Unit 0", url:"https://www.python.org/downloads/"},
+ {id:"git", name:"Git", what:"Versiebeheer voor je notities en write-ups in je repo.", when:"Unit 0", url:"https://git-scm.com/downloads"},
+ {id:"wireshark", name:"Wireshark", what:"Netwerkverkeer bekijken en analyseren.", when:"Unit 2", url:"https://www.wireshark.org/download.html"},
+ {id:"burp", name:"Burp Suite Community", what:"Webverkeer bekijken in de PortSwigger-labs. De gratis versie is genoeg.", when:"Unit 5", url:"https://portswigger.net/burp/communitydownload"},
+ {id:"virtualbox", name:"VirtualBox", what:"Virtuele machines voor je eigen lab. Op een Mac met M-chip kan UTM ook.", when:"Unit 6", url:"https://www.virtualbox.org/wiki/Downloads"},
+ {id:"kali", name:"Kali Linux (als VM)", what:"Linux met securitytools. Draait in VirtualBox, naast je gewone systeem.", when:"Unit 6", url:"https://www.kali.org/get-kali/"},
+ {id:"docker", name:"Docker Desktop", what:"Optioneel: de makkelijkste manier om OWASP Juice Shop te draaien.", when:"Unit 6", url:"https://www.docker.com/products/docker-desktop/"},
+ {id:"nmap", name:"Nmap", what:"Zien welke diensten draaien in je eigen lab. Zit al in Kali.", when:"Unit 6", url:"https://nmap.org/download"},
+ {id:"cyberchef", name:"CyberChef", what:"Webtool om data te coderen, decoderen en hashen. Niets te installeren.", when:"Unit 7", url:"https://gchq.github.io/CyberChef/"},
+ {id:"bitwarden", name:"Wachtwoordmanager", what:"Bijvoorbeeld Bitwarden (gratis versie). Beveiligt je eigen accounts.", when:"Unit 7", url:"https://bitwarden.com/"}
+];
+var ACCOUNTS = [
+ {id:"thm", name:"TryHackMe", what:"Begeleide rooms in je browser. Het gratis account is genoeg voor dit pad.", when:"Unit 1", url:"https://tryhackme.com/"},
+ {id:"otw", name:"OverTheWire", what:"Het Bandit-spel via SSH. Geen account nodig.", when:"Unit 1", url:"https://overthewire.org/wargames/bandit/"},
+ {id:"ps", name:"PortSwigger Academy", what:"Gratis websecurity-cursus met labs.", when:"Unit 5", url:PS},
+ {id:"cryptohack", name:"CryptoHack", what:"Cryptografie leren met puzzels.", when:"Unit 7", url:"https://cryptohack.org/"},
+ {id:"pico", name:"picoCTF", what:"Gratis CTF-oefeningen voor beginners.", when:"Unit 8", url:"https://picoctf.org/"},
+ {id:"htb", name:"Hack The Box", what:"Realistische machines. Starting Point Tier 0 is gratis.", when:"Unit 10", url:"https://www.hackthebox.com/"}
+];
+
+var LEVELS = [
+ {xp:0, name:"Nieuwkomer"}, {xp:150, name:"Terminal-leerling"}, {xp:400, name:"Pakketspeurder"},
+ {xp:800, name:"Scriptschrijver"}, {xp:1300, name:"Webverkenner"}, {xp:1900, name:"Labbouwer"},
+ {xp:2600, name:"Flaggenjager"}, {xp:3400, name:"Verdediger"}, {xp:4300, name:"Onderzoeker"}
+];
+
+/* ---------- Flattened lookups ---------- */
+var LESSONS = [];
+UNITS.forEach(function(u, ui){ u.n = ui; u.lessons.forEach(function(l){ l.unit = u; l.n = LESSONS.length + 1; LESSONS.push(l); }); });
+var LESSON_BY_ID = {}; LESSONS.forEach(function(l){ LESSON_BY_ID[l.id] = l; });
+
+/* ---------- Icons (static markup) ---------- */
+var I = {
+ flame:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.5-1.5 5.2-1.5 7.6 0 1.3.9 2.2 2 2.2 1.3 0 2-1.1 1.7-2.8 2.5 1.6 4.3 4.2 4.3 7.1A6.5 6.5 0 0 1 12 22.5 6.5 6.5 0 0 1 5.5 16c0-5 4.6-7.4 6.5-14z"/></svg>',
+ bolt:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 2 4 13.5h6.5L9.5 22 20 9.5h-6.6z"/></svg>',
+ shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2.5 4.5 5.5v6c0 4.6 3.1 8.6 7.5 10 4.4-1.4 7.5-5.4 7.5-10v-6z"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ star:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>',
+ out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8M9 8h7v7"/></svg>',
+ x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+};
+
+/* ---------- Helpers ---------- */
+function el(tag, attrs){
+  var e = document.createElement(tag);
+  if (attrs) Object.keys(attrs).forEach(function(k){
+    var v = attrs[k];
+    if (v == null || v === false) return;
+    if (k === "class") e.className = v;
+    else if (k === "text") e.textContent = v;
+    else if (k === "icon") e.innerHTML = v;
+    else if (k.slice(0,2) === "on") e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? "" : v);
+  });
+  for (var i = 2; i < arguments.length; i++) append(e, arguments[i]);
+  return e;
+}
+function append(e, kid){
+  if (kid == null || kid === false) return;
+  if (Array.isArray(kid)) { kid.forEach(function(k){ append(e, k); }); return; }
+  e.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+}
+function pad(n){ return String(n).padStart(2, "0"); }
+function keyOf(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
+function todayKey(){ return keyOf(new Date()); }
+function parseKey(k){ var p = String(k).split("-").map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function addDays(d, n){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate()+n); return x; }
+function weekStart(d){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay()+6) % 7)); return x; }
+function hashStr(s){ var h = 2166136261; for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed){ return function(){ seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function optionOrder(id, n){ var r = rng(hashStr(id)), a = []; for (var i = 0; i < n; i++) a.push(i); for (var j = n-1; j > 0; j--){ var k = Math.floor(r()*(j+1)); var t = a[j]; a[j] = a[k]; a[k] = t; } return a; }
+function shuffle(a){ for (var j = a.length-1; j > 0; j--){ var k = Math.floor(Math.random()*(j+1)); var t = a[j]; a[j] = a[k]; a[k] = t; } return a; }
+function fmtMin(m){ if (m < 60) return m + " min"; var h = Math.floor(m/60), r = m % 60; return h + " u" + (r ? " " + r + " min" : ""); }
+
+/* ---------- State ---------- */
+var DAILY_OPTS = [15, 30, 45, 60, 90];
+function freshState(){ return {v:1, created:todayKey(), updated:0, steps:{}, quiz:{}, log:{}, reviewXp:0, reviews:0, settings:{daily:60, weekly:5}, today:null, tools:{}, notes:{}, weekGoals:{}}; }
+function isObj(o){ return o && typeof o === "object" && !Array.isArray(o); }
+function normalize(o){
+  var d = freshState();
+  if (!isObj(o)) return d;
+  if (typeof o.created === "string" && /^\d{4}-\d{2}-\d{2}$/.test(o.created)) d.created = o.created;
+  if (typeof o.updated === "number") d.updated = o.updated;
+  ["steps","quiz","log","tools","notes","weekGoals"].forEach(function(k){ if (isObj(o[k])) d[k] = Object.assign({}, o[k]); });
+  if (typeof o.reviewXp === "number") d.reviewXp = Math.max(0, o.reviewXp);
+  if (typeof o.reviews === "number") d.reviews = Math.max(0, o.reviews);
+  if (isObj(o.settings)){
+    if (DAILY_OPTS.indexOf(o.settings.daily) >= 0) d.settings.daily = o.settings.daily;
+    if (o.settings.weekly >= 1 && o.settings.weekly <= 7) d.settings.weekly = Math.round(o.settings.weekly);
+  }
+  if (isObj(o.today) && typeof o.today.date === "string" && typeof o.today.budget === "number") d.today = {date:o.today.date, budget:o.today.budget};
+  return d;
+}
+function hasProgress(s){ return Object.keys(s.steps).length > 0 || Object.keys(s.quiz).length > 0 || s.reviews > 0 || Object.keys(s.tools).length > 0; }
+
+var S = freshState();
+var LS_KEY = "leerpad-ethisch-hacken-v1";
+var docRef = null, storeMode = "local", readOnly = false, writing = false, pendingWrite = false, dirty = false, writeTimer = null;
+
+function loadLocal(){ try { var raw = localStorage.getItem(LS_KEY); return raw ? normalize(JSON.parse(raw)) : null; } catch(e){ return null; } }
+function saveLocal(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} }
+function persist(){
+  S.updated = Date.now();
+  saveLocal();
+  if (docRef && !readOnly){ dirty = true; clearTimeout(writeTimer); writeTimer = setTimeout(function(){ writeTimer = null; flush(); }, 700); }
+}
+function flush(){
+  if (!docRef || readOnly) return;
+  if (writing){ pendingWrite = true; return; }
+  writing = true;
+  var body = JSON.parse(JSON.stringify(S));
+  docRef.set(body).then(function(){
+    if (!pendingWrite && !writeTimer) dirty = false;
+  }, function(e){
+    var code = e && e.code;
+    if (code === "invalid_argument" || code === "quota_exceeded"){ readOnly = true; renderStorageNote(); }
+    else if (code === "unavailable"){ setTimeout(flush, 1200 + Math.random()*1200); }
+    else { storeMode = "local"; renderStorageNote(); }
+  }).then(function(){
+    writing = false;
+    if (pendingWrite){ pendingWrite = false; flush(); }
+  });
+}
+function connectStore(){
+  if (!window.claude || typeof window.claude.use !== "function") return;
+  window.claude.use("db").then(function(db){
+    if (!db) return;
+    docRef = db.doc("progress/main");
+    return docRef.get().then(function(snap){
+      storeMode = "db";
+      if (snap.exists){
+        var remote = normalize(snap.data());
+        if ((remote.updated || 0) >= (S.updated || 0)) { S = remote; saveLocal(); render(); }
+        else if (hasProgress(S)) { flush(); }
+      } else if (hasProgress(S)) { flush(); }
+      renderStorageNote();
+      docRef.onSnapshot(function(s){
+        if (!s.exists || dirty || writing) return;
+        var remote = normalize(s.data());
+        if ((remote.updated || 0) > (S.updated || 0)) { S = remote; saveLocal(); render(); }
+      }, function(){ storeMode = "local"; renderStorageNote(); });
+    });
+  }).catch(function(){ docRef = null; storeMode = "local"; renderStorageNote(); });
+}
+
+/* ---------- Derived values ---------- */
+function stepId(l, i){ return l.id + ":" + i; }
+function stepsDone(l){ var n = 0; l.steps.forEach(function(s, i){ if (S.steps[stepId(l,i)]) n++; }); return n; }
+function lessonDone(l){ return stepsDone(l) === l.steps.length; }
+function quizDone(l){ return l.quiz.every(function(q, i){ return S.quiz[stepId(l,i)] != null; }); }
+function unitDone(ui){ return UNITS[ui].lessons.every(lessonDone); }
+function currentLesson(){ for (var i = 0; i < LESSONS.length; i++) if (!lessonDone(LESSONS[i])) return LESSONS[i]; return null; }
+function xpTotal(){
+  var x = S.reviewXp;
+  LESSONS.forEach(function(l){
+    l.steps.forEach(function(s, i){ if (S.steps[stepId(l,i)]) x += s.m; });
+    l.quiz.forEach(function(q, i){ var v = S.quiz[stepId(l,i)]; if (v === 1) x += 10; else if (v === 2) x += 6; else if (v === 0) x += 2; });
+  });
+  return x;
+}
+function levelOf(xp){ var i = 0; while (i+1 < LEVELS.length && xp >= LEVELS[i+1].xp) i++; return {i:i, cur:LEVELS[i], next:LEVELS[i+1] || null}; }
+function todayMinutes(){ return S.log[todayKey()] || 0; }
+function budgetToday(){ return (S.today && S.today.date === todayKey()) ? S.today.budget : S.settings.daily; }
+function goalFor(wk){ var g = S.weekGoals[wk]; return (typeof g === "number" && g >= 1) ? g : S.settings.weekly; }
+function activeDays(ws){ var n = 0; for (var i = 0; i < 7; i++) if ((S.log[keyOf(addDays(ws, i))] || 0) > 0) n++; return n; }
+function weekStreak(){
+  var cur = weekStart(new Date()), n = 0;
+  if (activeDays(cur) >= goalFor(keyOf(cur))) n++;
+  var first = weekStart(parseKey(S.created)), w = addDays(cur, -7);
+  Object.keys(S.log).forEach(function(k){ var ws = weekStart(parseKey(k)); if (ws < first) first = ws; });
+  while (w >= first){ if (activeDays(w) >= goalFor(keyOf(w))) { n++; w = addDays(w, -7); } else break; }
+  return n;
+}
+function dayStreak(){ var d = new Date(); if (!((S.log[keyOf(d)] || 0) > 0)) d = addDays(d, -1); var n = 0; while ((S.log[keyOf(d)] || 0) > 0){ n++; d = addDays(d, -1); } return n; }
+function addLog(dateKey, mins){
+  var v = Math.max(0, (S.log[dateKey] || 0) + mins);
+  if (v > 0) S.log[dateKey] = v; else delete S.log[dateKey];
+  var wk = keyOf(weekStart(parseKey(dateKey)));
+  if (S.weekGoals[wk] == null) S.weekGoals[wk] = S.settings.weekly;
+}
+
+/* ---------- Actions ---------- */
+function toggleStep(l, i){
+  var id = stepId(l, i), m = l.steps[i].m;
+  var wasDone = lessonDone(l), before = todayMinutes(), budget = budgetToday();
+  if (S.steps[id]) { addLog(S.steps[id], -m); delete S.steps[id]; }
+  else { var t = todayKey(); S.steps[id] = t; addLog(t, m); }
+  persist(); render();
+  if (!wasDone && lessonDone(l)) toast("Les afgerond: " + l.title + ". Doe nu de korte quiz.");
+  else if (before < budget && todayMinutes() >= budget) toast("Dagdoel gehaald. Goed bezig!");
+}
+function answerQuiz(l, qi, opt){
+  var id = stepId(l, qi);
+  if (S.quiz[id] != null) return;
+  var right = opt === l.quiz[qi].a;
+  S.quiz[id] = right ? 1 : 0;
+  chosen[id] = opt;
+  addLog(todayKey(), 2);
+  persist(); render();
+  if (quizDone(l)) {
+    var good = l.quiz.filter(function(q, i){ return S.quiz[stepId(l,i)] === 1; }).length;
+    toast("Quiz klaar: " + good + " van " + l.quiz.length + " in één keer goed.");
+  }
+}
+var chosen = {};
+function setTab(name){
+  document.querySelectorAll(".tab").forEach(function(t){ t.setAttribute("aria-selected", t.dataset.tab === name ? "true" : "false"); });
+  document.querySelectorAll("[data-panel]").forEach(function(p){ p.hidden = p.dataset.panel !== name; });
+  try { localStorage.setItem(LS_KEY + ":tab", name); } catch(e){}
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Toast ---------- */
+var toastTimer = null;
+function toast(msg){
+  var root = document.getElementById("toast-root");
+  root.innerHTML = "";
+  root.append(el("div", {class:"toast", role:"status", text:msg}));
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ root.innerHTML = ""; }, 3200);
+}
+
+/* ---------- Render: header ---------- */
+function renderStats(){
+  var xp = xpTotal(), lv = levelOf(xp), ws = weekStreak();
+  var box = document.getElementById("stats");
+  box.innerHTML = "";
+  box.append(
+    el("span", {class:"chip streak", title:"Weekreeks: weken op rij dat je je weekdoel haalde"}, el("span", {icon:I.flame}), ws + (ws === 1 ? " week" : " weken")),
+    el("span", {class:"chip xp", title:"Ervaringspunten"}, el("span", {icon:I.bolt}), xp + " XP"),
+    el("span", {class:"chip", title:"Niveau"}, el("span", {icon:I.shield}), "Niv. " + (lv.i+1))
+  );
+}
+function renderStorageNote(){
+  var n = document.getElementById("storage-note");
+  if (storeMode === "db" && !readOnly) n.textContent = "Voortgang wordt opgeslagen in je account en is op elk apparaat te zien.";
+  else if (storeMode === "db" && readOnly) n.textContent = "Je bekijkt deze voortgang alleen-lezen. Wijzigingen worden niet opgeslagen.";
+  else n.textContent = "Voortgang staat alleen in deze browser. Maak af en toe een back-up via Instellingen.";
+}
+
+/* ---------- Render: today ---------- */
+function planToday(){
+  var t = todayKey(), items = [], left = budgetToday() - todayMinutes(), added = 0;
+  LESSONS.forEach(function(l){ l.steps.forEach(function(s, i){ if (S.steps[stepId(l,i)] === t) items.push({type:"step", l:l, i:i, done:true}); }); });
+  for (var li = 0; li < LESSONS.length && left > 0; li++){
+    var l = LESSONS[li];
+    if (lessonDone(l)) {
+      if (!quizDone(l)) { items.push({type:"quiz", l:l}); left -= 5; added++; }
+      continue;
+    }
+    for (var i = 0; i < l.steps.length; i++){
+      if (S.steps[stepId(l,i)]) continue;
+      var m = l.steps[i].m;
+      if (added > 0 && m > left + 5) { left = 0; break; }
+      items.push({type:"step", l:l, i:i, done:false}); left -= m; added++;
+      if (left <= 0) break;
+    }
+  }
+  return items;
+}
+function nextUp(){
+  for (var li = 0; li < LESSONS.length; li++){
+    var l = LESSONS[li];
+    if (lessonDone(l)) { if (!quizDone(l)) return {type:"quiz", l:l}; continue; }
+    for (var i = 0; i < l.steps.length; i++) if (!S.steps[stepId(l,i)]) return {type:"step", l:l, i:i, done:false};
+  }
+  return null;
+}
+function ring(value, max){
+  var r = 40, c = 2*Math.PI*r, p = Math.min(1, max ? value/max : 0);
+  var ns = "http://www.w3.org/2000/svg";
+  var svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 100 100"); svg.setAttribute("class", "ring"); svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", value + " van " + max + " minuten vandaag");
+  function mk(tag, at){ var e = document.createElementNS(ns, tag); Object.keys(at).forEach(function(k){ e.setAttribute(k, at[k]); }); svg.appendChild(e); return e; }
+  mk("circle", {cx:50, cy:50, r:r, fill:"none", style:"stroke:var(--surface-2)", "stroke-width":10});
+  mk("circle", {cx:50, cy:50, r:r, fill:"none", style:"stroke:" + (p >= 1 ? "var(--ok)" : "var(--accent)"), "stroke-width":10, "stroke-linecap":"round", "stroke-dasharray":(c*p) + " " + c, transform:"rotate(-90 50 50)"});
+  var t1 = mk("text", {x:50, y:51, "text-anchor":"middle", "font-size":22}); t1.textContent = value;
+  var t2 = mk("text", {x:50, y:67, "text-anchor":"middle", "font-size":10, class:"sub"}); t2.textContent = "van " + max + " min";
+  return svg;
+}
+function planItem(it, inLesson){
+  if (it.type === "quiz"){
+    return el("div", {class:"item quiz"},
+      el("div", {class:"qicon", "aria-hidden":"true", text:"?"}),
+      el("div", {class:"item-body"},
+        el("p", {class:"item-text", text:"Quiz: " + it.l.title}),
+        el("div", {class:"item-meta"}, el("span", {class:"mins", text:"± 5 min"}),
+          el("button", {class:"btn", style:"padding:6px 12px;font-size:13px", onclick:function(){ openLesson(it.l.id, true); }, text:"Start de quiz"}))));
+  }
+  var s = it.l.steps[it.i];
+  return el("div", {class:"item" + (it.done ? " done" : "")},
+    el("button", {class:"check", role:"checkbox", "aria-checked":it.done ? "true" : "false", "aria-label":"Afvinken: " + s.t, icon:I.check, onclick:function(){ toggleStep(it.l, it.i); }}),
+    el("div", {class:"item-body"},
+      el("p", {class:"item-text", text:s.t}),
+      el("div", {class:"item-meta"},
+        el("span", {class:"mins", text:s.m + " min"}),
+        inLesson ? null : el("button", {class:"textbtn", text:"Les " + it.l.n + ": " + it.l.title, onclick:function(){ openLesson(it.l.id); }}),
+        s.url ? el("a", {class:"open", href:s.url, target:"_blank", rel:"noopener"}, s.label || "Openen", el("span", {icon:I.out})) : null)));
+}
+function renderToday(){
+  var p = document.getElementById("p-vandaag"); p.innerHTML = "";
+  var budget = budgetToday(), mins = todayMinutes();
+  var dateStr = new Intl.DateTimeFormat("nl-NL", {weekday:"long", day:"numeric", month:"long"}).format(new Date());
+  var ws = weekStart(new Date()), act = activeDays(ws), goal = goalFor(keyOf(ws));
+  var pills = el("div", {class:"pills", role:"group", "aria-label":"Tijd vandaag"});
+  DAILY_OPTS.forEach(function(m){
+    pills.append(el("button", {class:"pill", "aria-pressed":budget === m ? "true" : "false", text:m + " min", onclick:function(){ S.today = {date:todayKey(), budget:m}; persist(); render(); }}));
+  });
+  p.append(el("div", {class:"card today-head"},
+    ring(mins, budget),
+    el("div", {class:"stack-s", style:"min-width:0"},
+      el("p", {class:"eyebrow", text:dateStr}),
+      el("h2", {text: mins >= budget ? "Dagdoel gehaald" : (mins > 0 ? "Lekker bezig" : "Klaar voor vandaag?")}),
+      el("p", {class:"muted small", text:"Hoeveel tijd heb je vandaag?"}),
+      pills)));
+
+  var items = planToday(), open = items.filter(function(x){ return !x.done; });
+  var list = el("div", {class:"plan"});
+  items.forEach(function(it){ list.append(planItem(it)); });
+  var sec = el("div", {}, el("h3", {class:"section-title", text:"Jouw plan voor vandaag"}));
+  if (items.length) sec.append(list);
+  if (!open.length){
+    var nx = nextUp();
+    if (!nx) sec.append(el("p", {class:"callout", text:"Je hebt het hele leerpad afgerond. Tijd om een nieuwe richting te kiezen (les 52)!"}));
+    else {
+      sec.append(el("p", {class:"callout", style:"margin-top:" + (items.length ? "10px" : "0"), text: items.length ? "Je plan voor vandaag is af. Zin in meer? Dit is de volgende stap:" : "Je dagdoel is al gehaald. Zin in meer? Dit is de volgende stap:"}));
+      var extra = el("div", {class:"plan", style:"margin-top:8px"}); extra.append(planItem(nx)); sec.append(extra);
+    }
+  }
+  p.append(sec);
+
+  p.append(el("div", {class:"card review-card"},
+    el("div", {}, el("h3", {style:"font-size:17px", text:"Weinig tijd? Doe een korte herhaling"}),
+      el("p", {class:"small muted", text:"5 vragen uit lessen die je al deed, in ongeveer 8 minuten. Telt als actieve dag."})),
+    el("button", {class:"btn", text:"Start herhaling", onclick:startReview})));
+
+  var week = el("div", {class:"week"}), tk = todayKey();
+  for (var i = 0; i < 7; i++){
+    var d = addDays(ws, i), k = keyOf(d), on = (S.log[k] || 0) > 0;
+    week.append(el("div", {class:"day"},
+      el("span", {text:["ma","di","wo","do","vr","za","zo"][i]}),
+      el("span", {class:"dot" + (on ? " on" : "") + (k === tk ? " today" : ""), title:(S.log[k] || 0) + " min", icon:I.check})));
+  }
+  p.append(el("div", {class:"card"},
+    el("div", {class:"row", style:"justify-content:space-between"},
+      el("h3", {style:"font-size:17px", text:"Deze week"}),
+      el("span", {class:"small muted", text:act + " van " + goal + " dagen" + (act >= goal ? ", weekdoel gehaald" : "")})),
+    week));
+}
+
+/* ---------- Render: path ---------- */
+var ZIG = [0, 1, 1.5, 1, 0, -1, -1.5, -1];
+function renderPath(){
+  var p = document.getElementById("p-pad"); p.innerHTML = "";
+  var cur = currentLesson();
+  UNITS.forEach(function(u){
+    var done = u.lessons.filter(lessonDone).length;
+    var path = el("div", {class:"path"});
+    u.lessons.forEach(function(l, li){
+      var sd = stepsDone(l), state = lessonDone(l) ? "done" : (cur === l ? "current" : (sd > 0 ? "started" : ""));
+      var node = el("button", {class:"node " + state, "aria-label":"Les " + l.n + ": " + l.title + (state === "done" ? " (afgerond)" : ""), onclick:function(){ openLesson(l.id); }});
+      if (state === "done") node.innerHTML = I.check; else node.textContent = l.n;
+      if (quizDone(l)) node.append(el("span", {class:"star", title:"Quiz gedaan", icon:I.star}));
+      var row = el("div", {class:"node-row", style:"--k:" + ZIG[li % ZIG.length]},
+        cur === l ? el("span", {class:"start-tag", text:"HIER VERDER"}) : null,
+        node,
+        el("div", {class:"node-label"}, l.title, el("small", {text:sd + "/" + l.steps.length + " stappen"})));
+      path.append(row);
+    });
+    p.append(el("section", {class:"unit"},
+      el("header", {class:"unit-head"},
+        el("div", {}, el("p", {class:"eyebrow", text:"Unit " + u.n}), el("h3", {text:u.title}), el("p", {text:u.blurb})),
+        el("span", {class:"meter", text:done + "/" + u.lessons.length})),
+      path));
+  });
+}
+
+/* ---------- Render: tools ---------- */
+function toolRow(t){
+  var on = !!S.tools[t.id];
+  return el("div", {class:"tool"},
+    el("button", {class:"check", role:"checkbox", "aria-checked":on ? "true" : "false", "aria-label":"Klaar: " + t.name, icon:I.check, onclick:function(){ if (on) delete S.tools[t.id]; else S.tools[t.id] = todayKey(); persist(); render(); }}),
+    el("div", {style:"min-width:0"},
+      el("div", {class:"row"}, el("h4", {text:t.name}), el("span", {class:"tag", text:t.when})),
+      el("p", {class:"small muted", style:"margin-top:2px", text:t.what}),
+      el("div", {class:"item-meta"}, el("a", {class:"open", href:t.url, target:"_blank", rel:"noopener"}, "Officiële site", el("span", {icon:I.out})))));
+}
+function renderTools(){
+  var p = document.getElementById("p-gereedschap"); p.innerHTML = "";
+  var nT = TOOLS.filter(function(t){ return S.tools[t.id]; }).length, nA = ACCOUNTS.filter(function(t){ return S.tools[t.id]; }).length;
+  p.append(el("div", {class:"card stack-s"},
+    el("h3", {style:"font-size:17px", text:"Installeren op je eigen computer"}),
+    el("p", {class:"small", text:"Alles hieronder is gratis. Je hoeft het niet allemaal meteen te installeren: het label zegt in welke unit je het nodig hebt. In SETUP.md in je repo staan kant-en-klare installatiecommando's voor Windows, macOS en Linux."}),
+    el("p", {class:"small muted", text:"Windows, in PowerShell, voor de basis (unit 0 tot en met 2):"}),
+    el("pre", {class:"cmd", text:"winget install Microsoft.VisualStudioCode Python.Python.3.12 Git.Git WiresharkFoundation.Wireshark"})));
+  var tl = el("div", {class:"tool-list"}); TOOLS.forEach(function(t){ tl.append(toolRow(t)); });
+  var al = el("div", {class:"tool-list"}); ACCOUNTS.forEach(function(t){ al.append(toolRow(t)); });
+  p.append(el("div", {}, el("div", {class:"row", style:"justify-content:space-between;margin-bottom:10px"}, el("h3", {style:"font-size:18px", text:"Programma's"}), el("span", {class:"small muted mins", text:nT + "/" + TOOLS.length})), tl));
+  p.append(el("div", {}, el("div", {class:"row", style:"justify-content:space-between;margin-bottom:10px"}, el("h3", {style:"font-size:18px", text:"Gratis oefenplatforms"}), el("span", {class:"small muted mins", text:nA + "/" + ACCOUNTS.length})), al));
+}
+
+/* ---------- Render: progress ---------- */
+var BADGES = [
+ {name:"Eerste stap", desc:"Je eerste stap afgevinkt", test:function(){ return Object.keys(S.steps).length > 0; }},
+ {name:"Met toestemming", desc:"Unit 0 afgerond", test:function(){ return unitDone(0); }},
+ {name:"Terminal-held", desc:"Unit 1: Linux afgerond", test:function(){ return unitDone(1); }},
+ {name:"Netwerker", desc:"Unit 2: Netwerken afgerond", test:function(){ return unitDone(2); }},
+ {name:"Scriptschrijver", desc:"Unit 3: Python afgerond", test:function(){ return unitDone(3); }},
+ {name:"Webkenner", desc:"Unit 4 en 5 afgerond", test:function(){ return unitDone(4) && unitDone(5); }},
+ {name:"Labbouwer", desc:"Unit 6: eigen lab afgerond", test:function(){ return unitDone(6); }},
+ {name:"Codekraker", desc:"Unit 7: cryptografie afgerond", test:function(){ return unitDone(7); }},
+ {name:"Flaggenjager", desc:"Unit 8: CTF's afgerond", test:function(){ return unitDone(8); }},
+ {name:"Verdediger", desc:"Unit 9 afgerond", test:function(){ return unitDone(9); }},
+ {name:"Volhouder", desc:"4 weken op rij je weekdoel gehaald", test:function(){ return weekStreak() >= 4; }},
+ {name:"Quizkop", desc:"50 vragen in één keer goed", test:function(){ return Object.keys(S.quiz).filter(function(k){ return S.quiz[k] === 1; }).length >= 50; }},
+ {name:"Herhaler", desc:"10 herhalingen gedaan", test:function(){ return S.reviews >= 10; }}
+];
+function renderProgress(){
+  var p = document.getElementById("p-voortgang"); p.innerHTML = "";
+  var xp = xpTotal(), lv = levelOf(xp);
+  var lessonsDone = LESSONS.filter(lessonDone).length;
+  var totalMin = Object.keys(S.log).reduce(function(a, k){ return a + (S.log[k] || 0); }, 0);
+  var lvPct = lv.next ? Math.round((xp - lv.cur.xp) / (lv.next.xp - lv.cur.xp) * 100) : 100;
+  p.append(el("div", {class:"card stack-s"},
+    el("p", {class:"eyebrow", text:"Niveau " + (lv.i+1)}),
+    el("h2", {style:"font-size:24px", text:lv.cur.name}),
+    el("div", {class:"bar", role:"progressbar", "aria-valuenow":lvPct, "aria-valuemin":0, "aria-valuemax":100}, el("span", {style:"width:" + lvPct + "%"})),
+    el("p", {class:"small muted", text: lv.next ? (lv.next.xp - xp) + " XP tot " + lv.next.name : "Hoogste niveau bereikt"})));
+  p.append(el("div", {class:"tiles"},
+    el("div", {class:"tile"}, el("div", {class:"num", text:xp}), el("div", {class:"lbl", text:"XP totaal"})),
+    el("div", {class:"tile"}, el("div", {class:"num", text:lessonsDone + "/" + LESSONS.length}), el("div", {class:"lbl", text:"Lessen afgerond"})),
+    el("div", {class:"tile"}, el("div", {class:"num", text:fmtMin(totalMin)}), el("div", {class:"lbl", text:"Geoefend"})),
+    el("div", {class:"tile"}, el("div", {class:"num", text:weekStreak()}), el("div", {class:"lbl", text:"Weekreeks (dagreeks: " + dayStreak() + ")"}))));
+
+  var heat = el("div", {class:"heat", role:"img", "aria-label":"Activiteit van de afgelopen 16 weken"});
+  var start = addDays(weekStart(new Date()), -15*7), tk = todayKey(), today = new Date();
+  for (var i = 0; i < 16*7; i++){
+    var d = addDays(start, i), k = keyOf(d), m = S.log[k] || 0;
+    var lvl = m === 0 ? "" : m < 20 ? "l1" : m < 40 ? "l2" : m < 60 ? "l3" : "l4";
+    heat.append(el("i", {class:(d > today && k !== tk) ? "future" : lvl, title:k + ": " + m + " min"}));
+  }
+  p.append(el("div", {class:"card"},
+    el("h3", {style:"font-size:17px;margin-bottom:10px", text:"Activiteit"}),
+    el("div", {class:"heat-wrap"}, heat),
+    el("div", {class:"legend"}, "minder", el("i", {style:"background:var(--surface-2);border:1px solid var(--line)"}), el("i", {style:"background:var(--heat1)"}), el("i", {style:"background:var(--heat2)"}), el("i", {style:"background:var(--heat3)"}), el("i", {style:"background:var(--heat4)"}), "meer")));
+
+  var up = el("div", {class:"units-prog"});
+  UNITS.forEach(function(u){
+    var tot = 0, dn = 0; u.lessons.forEach(function(l){ tot += l.steps.length; dn += stepsDone(l); });
+    up.append(el("div", {class:"uprog"},
+      el("span", {text:u.n + ". " + u.title}), el("span", {class:"n", text:u.lessons.filter(lessonDone).length + "/" + u.lessons.length + " lessen"}),
+      el("div", {class:"bar"}, el("span", {style:"width:" + Math.round(dn/tot*100) + "%"}))));
+  });
+  p.append(el("div", {class:"card"}, el("h3", {style:"font-size:17px;margin-bottom:12px", text:"Per unit"}), up));
+
+  var bg = el("div", {class:"badges"});
+  BADGES.forEach(function(b){ var on = b.test(); bg.append(el("div", {class:"badge" + (on ? " on" : "")}, el("b", {text:b.name}), el("span", {text:(on ? "" : "Nog niet: ") + b.desc}))); });
+  p.append(el("div", {}, el("h3", {class:"section-title", text:"Badges"}), bg));
+}
+
+/* ---------- Render: settings ---------- */
+var confirmReset = false, backupOpen = false, restoreOpen = false;
+function renderSettings(){
+  var p = document.getElementById("p-instellingen"); p.innerHTML = "";
+  var dp = el("div", {class:"pills"});
+  DAILY_OPTS.forEach(function(m){ dp.append(el("button", {class:"pill", "aria-pressed":S.settings.daily === m ? "true" : "false", text:m + " min", onclick:function(){ S.settings.daily = m; persist(); render(); }})); });
+  var wp = el("div", {class:"pills"});
+  [1,2,3,4,5,6,7].forEach(function(n){ wp.append(el("button", {class:"pill", "aria-pressed":S.settings.weekly === n ? "true" : "false", text:n + (n === 1 ? " dag" : " dagen"), onclick:function(){ S.settings.weekly = n; S.weekGoals[keyOf(weekStart(new Date()))] = n; persist(); render(); }})); });
+  p.append(el("div", {class:"card stack-s"},
+    el("h3", {style:"font-size:17px", text:"Dagelijkse tijd"}),
+    el("p", {class:"small muted", text:"Zoveel minuten plant de app standaard per dag. Op het tabblad Vandaag kun je dit per dag aanpassen."}), dp));
+  p.append(el("div", {class:"card stack-s"},
+    el("h3", {style:"font-size:17px", text:"Weekdoel"}),
+    el("p", {class:"small muted", text:"Op hoeveel dagen per week wil je oefenen? Haal je dit doel, dan groeit je weekreeks. Heb je een drukke periode, zet het dan lager: je reeks blijft gewoon staan."}), wp));
+
+  var backup = el("div", {class:"card stack-s"},
+    el("h3", {style:"font-size:17px", text:"Back-up"}),
+    el("p", {class:"small muted", text:"Kopieer je voortgang als tekst en bewaar die bijvoorbeeld in je repo. Met Herstellen plak je hem later terug."}),
+    el("div", {class:"row"},
+      el("button", {class:"btn ghost", text:"Kopieer back-up", onclick:function(){
+        var json = JSON.stringify(S);
+        try { navigator.clipboard.writeText(json).then(function(){ toast("Back-up gekopieerd."); }, function(){ backupOpen = true; render(); }); }
+        catch(e){ backupOpen = true; render(); }
+      }}),
+      el("button", {class:"btn ghost", text:"Herstellen", onclick:function(){ restoreOpen = !restoreOpen; render(); }})));
+  if (backupOpen){
+    var ta = el("textarea", {id:"backup-text", rows:4, readonly:true});
+    ta.value = JSON.stringify(S);
+    backup.append(el("p", {class:"small", text:"Kopiëren lukte niet automatisch. Selecteer de tekst hieronder en kopieer hem zelf."}), ta);
+    setTimeout(function(){ ta.select(); }, 0);
+  }
+  if (restoreOpen){
+    var rt = el("textarea", {id:"restore-text", rows:4, placeholder:"Plak hier je back-up"});
+    backup.append(rt, el("div", {class:"row"}, el("button", {class:"btn", text:"Voortgang herstellen", onclick:function(){
+      try {
+        var o = JSON.parse(rt.value);
+        if (!isObj(o) || !isObj(o.steps)) throw new Error("bad");
+        S = normalize(o); restoreOpen = false; persist(); render(); toast("Voortgang hersteld.");
+      } catch(e){ toast("Dat is geen geldige back-up. Plak de hele tekst die je eerder kopieerde."); }
+    }})));
+  }
+  p.append(backup);
+
+  var reset = el("div", {class:"card stack-s"},
+    el("h3", {style:"font-size:17px", text:"Opnieuw beginnen"}),
+    el("p", {class:"small muted", text:"Wist al je afgevinkte stappen, quizantwoorden en XP."}));
+  if (!confirmReset) reset.append(el("div", {}, el("button", {class:"btn ghost", text:"Alles wissen", onclick:function(){ confirmReset = true; render(); }})));
+  else reset.append(el("p", {class:"small", text:"Weet je het zeker? Dit kun je niet ongedaan maken, tenzij je een back-up hebt."}),
+    el("div", {class:"row"},
+      el("button", {class:"btn danger", text:"Ja, wis alles", onclick:function(){ var keep = S.settings; S = freshState(); S.settings = keep; confirmReset = false; persist(); render(); toast("Voortgang gewist."); }}),
+      el("button", {class:"btn ghost", text:"Annuleren", onclick:function(){ confirmReset = false; render(); }})));
+  p.append(reset);
+}
+
+/* ---------- Lesson sheet ---------- */
+var openId = null, noteTimer = null;
+function questionBlock(l, qi, onPick, reviewMode, pickedLocal){
+  var q = l.quiz[qi], id = stepId(l, qi), state = reviewMode ? null : S.quiz[id];
+  var picked = reviewMode ? pickedLocal : chosen[id];
+  var answered = reviewMode ? pickedLocal != null : state != null;
+  var box = el("div", {class:"q"}, el("p", {text:q.q}));
+  optionOrder(id, q.o.length).forEach(function(oi){
+    var cls = "opt";
+    if (answered && oi === q.a) cls += " right";
+    else if (answered && picked === oi) cls += " wrong";
+    box.append(el("button", {class:cls, disabled:answered, text:q.o[oi], onclick:function(){ onPick(oi); }}));
+  });
+  if (answered){
+    var good = reviewMode ? pickedLocal === q.a : (state === 1 || state === 2);
+    box.append(el("p", {class:"fb " + (good ? "good" : "bad")}, el("b", {text: good ? "Goed! " : "Helaas. "}), q.e));
+  }
+  return box;
+}
+function openLesson(id, toQuiz){
+  openId = id; renderSheet();
+  if (toQuiz){ var qz = document.getElementById("quiz-anchor"); if (qz) qz.scrollIntoView({block:"start"}); }
+}
+function closeSheet(){ openId = null; review = null; document.getElementById("sheet-root").innerHTML = ""; document.body.style.overflow = ""; }
+function renderSheet(){
+  var root = document.getElementById("sheet-root");
+  if (review) return renderReview();
+  if (!openId){ root.innerHTML = ""; return; }
+  var active = document.activeElement;
+  if (active && active.id === "lesson-notes") return;
+  var oldSheet = root.querySelector(".sheet"), scroll = oldSheet ? oldSheet.scrollTop : 0;
+  var l = LESSON_BY_ID[openId];
+  var steps = el("div", {class:"plan"});
+  l.steps.forEach(function(s, i){ steps.append(planItem({type:"step", l:l, i:i, done:!!S.steps[stepId(l,i)]}, true)); });
+  var quiz = el("div", {class:"stack-s", id:"quiz-anchor"},
+    el("h3", {style:"font-size:18px", text:"Check je kennis"}),
+    lessonDone(l) || quizDone(l) ? null : el("p", {class:"small muted", text:"Je kunt de quiz altijd doen, maar hij is het leerzaamst als je de stappen hierboven af hebt."}));
+  l.quiz.forEach(function(q, qi){ quiz.append(questionBlock(l, qi, function(opt){ answerQuiz(l, qi, opt); })); });
+  var notes = el("textarea", {id:"lesson-notes", rows:3, maxlength:2000, placeholder:"Wat wil je onthouden? Langere write-ups zet je in je repo."});
+  notes.value = S.notes[l.id] || "";
+  notes.addEventListener("input", function(){
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(function(){ if (notes.value) S.notes[l.id] = notes.value; else delete S.notes[l.id]; persist(); }, 600);
+  });
+  var idx = LESSONS.indexOf(l), next = LESSONS[idx+1];
+  var sheet = el("div", {class:"sheet", role:"dialog", "aria-modal":"true", "aria-labelledby":"sheet-title"},
+    el("div", {class:"sheet-head"},
+      el("div", {}, el("p", {class:"eyebrow", text:"Unit " + l.unit.n + " · " + l.unit.title + " · Les " + l.n}), el("h2", {id:"sheet-title", text:l.title})),
+      el("button", {class:"x", "aria-label":"Sluiten", icon:I.x, onclick:closeSheet})),
+    el("p", {class:"intro", text:l.intro}),
+    el("div", {class:"stack-s"}, el("h3", {style:"font-size:18px", text:"Stappen"}), steps),
+    quiz,
+    el("div", {class:"stack-s"}, el("label", {for:"lesson-notes", style:"font-weight:600", text:"Snelle notitie"}), notes),
+    el("div", {class:"row", style:"justify-content:space-between"},
+      el("button", {class:"btn ghost", text:"Sluiten", onclick:closeSheet}),
+      next ? el("button", {class:"btn", text:"Volgende les", onclick:function(){ openLesson(next.id); var s = root.querySelector(".sheet"); if (s) s.scrollTop = 0; }}) : null));
+  var back = el("div", {class:"backdrop", onclick:function(e){ if (e.target === back) closeSheet(); }}, sheet);
+  root.innerHTML = ""; root.append(back);
+  document.body.style.overflow = "hidden";
+  sheet.scrollTop = scroll;
+}
+
+/* ---------- Review session ---------- */
+var review = null;
+function startReview(){
+  var seen = LESSONS.filter(function(l){ return stepsDone(l) > 0 || l.quiz.some(function(q, i){ return S.quiz[stepId(l,i)] != null; }); });
+  var pool = [];
+  (seen.length ? seen : UNITS[0].lessons).forEach(function(l){ l.quiz.forEach(function(q, i){ pool.push({l:l, qi:i, w:S.quiz[stepId(l,i)] === 0 ? 0 : 1}); }); });
+  shuffle(pool); pool.sort(function(a, b){ return a.w - b.w; });
+  review = {qs:pool.slice(0, 5), idx:0, picked:null, right:0, xp:0};
+  openId = null; renderReview();
+}
+function renderReview(){
+  var root = document.getElementById("sheet-root");
+  var r = review, body;
+  if (r.idx >= r.qs.length){
+    body = [el("p", {class:"eyebrow", text:"Herhaling klaar"}),
+      el("h2", {style:"font-size:26px", text:r.right + " van " + r.qs.length + " goed"}),
+      el("p", {text:"+" + r.xp + " XP en 8 minuten geoefend. Vragen die je fout had komen de volgende keer eerder terug."}),
+      el("div", {}, el("button", {class:"btn", text:"Klaar", onclick:closeSheet}))];
+  } else {
+    var cur = r.qs[r.idx];
+    body = [el("div", {class:"sheet-head"},
+        el("div", {style:"flex:1"}, el("p", {class:"eyebrow", text:"Herhaling · vraag " + (r.idx+1) + " van " + r.qs.length}),
+          el("div", {class:"progressline", style:"margin-top:8px"}, el("span", {style:"width:" + Math.round(r.idx / r.qs.length * 100) + "%"}))),
+        el("button", {class:"x", "aria-label":"Stoppen", icon:I.x, onclick:closeSheet})),
+      el("p", {class:"small muted", text:"Uit les " + cur.l.n + ": " + cur.l.title}),
+      questionBlock(cur.l, cur.qi, function(opt){ pickReview(opt); }, true, r.picked)];
+    if (r.picked != null) body.push(el("div", {}, el("button", {class:"btn", text: r.idx + 1 < r.qs.length ? "Volgende vraag" : "Afronden", onclick:nextReview})));
+  }
+  var sheet = el("div", {class:"sheet", role:"dialog", "aria-modal":"true", "aria-label":"Herhaling"}, body);
+  var back = el("div", {class:"backdrop"}, sheet);
+  root.innerHTML = ""; root.append(back);
+  document.body.style.overflow = "hidden";
+}
+function pickReview(opt){
+  var r = review, cur = r.qs[r.idx], id = stepId(cur.l, cur.qi);
+  r.picked = opt;
+  if (opt === cur.l.quiz[cur.qi].a){ r.right++; r.xp += 3; if (S.quiz[id] === 0) S.quiz[id] = 2; }
+  renderReview();
+}
+function nextReview(){
+  var r = review;
+  r.idx++; r.picked = null;
+  if (r.idx >= r.qs.length){ S.reviewXp += r.xp; S.reviews++; addLog(todayKey(), 8); persist(); render(); }
+  renderReview();
+}
+
+/* ---------- Render all ---------- */
+function render(){
+  renderStats(); renderToday(); renderPath(); renderTools(); renderProgress(); renderSettings(); renderStorageNote();
+  if (openId && !review) renderSheet();
+}
+
+document.querySelectorAll(".tab").forEach(function(t){ t.addEventListener("click", function(){ setTab(t.dataset.tab); }); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && (openId || review)) closeSheet(); });
+S = loadLocal() || freshState();
+render();
+try { var savedTab = localStorage.getItem(LS_KEY + ":tab"); if (savedTab && document.querySelector('[data-tab="' + savedTab + '"]')) setTab(savedTab); } catch(e){}
+connectStore();
+</script>

@@ -271,30 +271,33 @@ var UNITS = [
   {id:"l1-1", title:"Linux Fundamentals 1",
    intro:"Je eerste commando's: door mappen navigeren, bestanden bekijken en zoeken. TryHackMe geeft je een Linux-machine in je browser, dus je hoeft niets te installeren.",
    steps:[
-    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 1", m:30, url:THM+"linuxfundamentalspart1", label:"TryHackMe"},
-    {t:"Maak de room af en noteer de commando's die nieuw voor je waren", m:25, url:THM+"linuxfundamentalspart1", label:"TryHackMe"}
+    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 1", m:30, url:THM+"linuxfundamentalspart1", label:"TryHackMe", alt:{url:"https://ubuntu.com/tutorials/command-line-for-beginners", label:"Ubuntu-tutorial"}},
+    {t:"Maak de room af en noteer de commando's die nieuw voor je waren", m:25, url:THM+"linuxfundamentalspart1", label:"TryHackMe", alt:{url:"https://ubuntu.com/tutorials/command-line-for-beginners", label:"Ubuntu-tutorial"}}
    ],
    quiz:[
     {q:"Welk commando laat zien in welke map je nu staat?", o:["pwd","ls","cd","cat"], a:0, e:"pwd staat voor print working directory."},
     {q:"Wat doet cat bestand.txt?", o:["De inhoud van het bestand tonen","Het bestand verwijderen","Het bestand kopiëren","Het bestand versleutelen"], a:0, e:"cat (van concatenate) zet de inhoud van een of meer bestanden op je scherm."}
    ]},
-  {id:"l1-2", title:"Linux Fundamentals 2",
-   intro:"Inloggen via SSH, bestandsrechten en de belangrijkste mappen van een Linux-systeem.",
+  {id:"l1-2", title:"Linux op je eigen computer",
+   intro:"Met WSL (Windows Subsystem for Linux) draai je gratis een echte Ubuntu-Linux op je eigen Windows-computer. Daar oefen je de rest van deze unit, zonder abonnement.",
    steps:[
-    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 2", m:30, url:THM+"linuxfundamentalspart2", label:"TryHackMe"},
-    {t:"Maak de room af en schrijf in je eigen woorden uit hoe rwx-rechten werken", m:25, url:THM+"linuxfundamentalspart2", label:"TryHackMe"}
+    {t:"Open PowerShell als administrator, voer wsl --install uit en herstart je computer", m:15, url:"https://learn.microsoft.com/en-us/windows/wsl/install", label:"Microsoft"},
+    {t:"Start Ubuntu vanuit het Start-menu en kies een gebruikersnaam en wachtwoord", m:10},
+    {t:"Doe de Ubuntu-tutorial The Linux command line for beginners", m:35, url:"https://ubuntu.com/tutorials/command-line-for-beginners", label:"ubuntu.com"}
+   ],
+   quiz:[
+    {q:"Wat is WSL?", o:["Een manier om Linux te draaien binnen Windows","Een virus","Een programmeertaal"], a:0, e:"WSL geeft je een volwaardige Linux-terminal naast je gewone Windows-programma's."},
+    {q:"Wat doet sudo?", o:["Een commando uitvoeren met beheerdersrechten (als root)","De computer afsluiten","Een bestand verwijderen"], a:0, e:"Gebruik sudo alleen als het echt nodig is. Met beheerdersrechten kun je ook veel kapotmaken."}
+   ]},
+  {id:"l1-3", title:"Rechten, processen en logs",
+   intro:"Bestandsrechten, processen, logbestanden en tekst bewerken. Je oefent in Ubuntu (WSL) met de opdrachten in notities/linux-oefeningen.md in je repo.",
+   steps:[
+    {t:"Doe deel A van notities/linux-oefeningen.md: bestandsrechten", m:25},
+    {t:"Doe deel B: processen en logbestanden", m:20},
+    {t:"Doe deel C: downloaden, bewerken met nano en je spiekbriefje", m:20}
    ],
    quiz:[
     {q:"Wat betekent de r in de rechten rwx?", o:["read (lezen)","run (starten)","remove (verwijderen)","root"], a:0, e:"r = lezen, w = schrijven, x = uitvoeren."},
-    {q:"Waarvoor gebruik je SSH?", o:["Om veilig op afstand in te loggen op een andere computer","Om websites te bouwen","Om bestanden te comprimeren"], a:0, e:"SSH (Secure Shell) geeft je een versleutelde terminal op een andere machine."}
-   ]},
-  {id:"l1-3", title:"Linux Fundamentals 3",
-   intro:"Tekst bewerken in de terminal, bestanden downloaden, processen en logbestanden.",
-   steps:[
-    {t:"Werk 30 minuten aan de room Linux Fundamentals Part 3", m:30, url:THM+"linuxfundamentalspart3", label:"TryHackMe"},
-    {t:"Maak de room af en maak een spiekbriefje met je 15 belangrijkste commando's", m:25, url:THM+"linuxfundamentalspart3", label:"TryHackMe"}
-   ],
-   quiz:[
     {q:"Waar staan op Linux meestal de logbestanden?", o:["/var/log","/home","/bin","/tmp"], a:0, e:"In /var/log vind je onder andere inlogpogingen en systeemmeldingen."},
     {q:"Wat doet een pipe (|) tussen twee commando's?", o:["De uitvoer van het eerste commando gaat naar het tweede","Beide commando's draaien tegelijk","De uitvoer wordt in een bestand opgeslagen"], a:0, e:"Met pipes bouw je kleine commando's om tot krachtige combinaties."}
    ]},
@@ -335,8 +338,8 @@ var UNITS = [
   {id:"l2-1", title:"Wat is een netwerk?",
    intro:"IP-adressen, MAC-adressen, routers en het lokale netwerk bij jou thuis. Dit zijn rooms uit het gratis Pre Security-pad van TryHackMe.",
    steps:[
-    {t:"Doe de room What is Networking?", m:30, url:THM+"whatisnetworking", label:"TryHackMe"},
-    {t:"Doe de room Intro to LAN", m:30, url:THM+"introtolan", label:"TryHackMe"}
+    {t:"Doe de room What is Networking?", m:30, url:THM+"whatisnetworking", label:"TryHackMe", alt:{url:"https://www.cloudflare.com/learning/network-layer/what-is-a-lan/", label:"Cloudflare: What is a LAN?"}},
+    {t:"Doe de room Intro to LAN", m:30, url:THM+"introtolan", label:"TryHackMe", alt:{url:"https://www.cloudflare.com/learning/network-layer/what-is-a-lan/", label:"Cloudflare: What is a LAN?"}}
    ],
    quiz:[
     {q:"Wat is een IP-adres?", o:["Het adres van een apparaat op een netwerk","De naam van een website","Het serienummer van je router"], a:0, e:"Net als een huisadres zorgt een IP-adres dat data bij het juiste apparaat aankomt."},
@@ -345,8 +348,8 @@ var UNITS = [
   {id:"l2-2", title:"Het OSI-model en pakketten",
    intro:"Netwerkverkeer is opgebouwd in lagen. Als je die kent, snap je waar een aanval of verdediging precies werkt.",
    steps:[
-    {t:"Doe de room OSI Model", m:30, url:THM+"osimodelzi", label:"TryHackMe"},
-    {t:"Doe de room Packets & Frames", m:30, url:THM+"packetsframes", label:"TryHackMe"}
+    {t:"Doe de room OSI Model", m:30, url:THM+"osimodelzi", label:"TryHackMe", alt:{url:"https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/", label:"Cloudflare: OSI-model"}},
+    {t:"Doe de room Packets & Frames", m:30, url:THM+"packetsframes", label:"TryHackMe", alt:{url:"https://www.cloudflare.com/learning/ddos/glossary/tcp-ip/", label:"Cloudflare: TCP/IP"}}
    ],
    quiz:[
     {q:"Wat is het belangrijkste verschil tussen TCP en UDP?", o:["TCP controleert of alles aankomt, UDP niet","UDP is altijd veiliger","Er is geen verschil"], a:0, e:"TCP is betrouwbaar maar trager, UDP is snel en wordt gebruikt voor bijvoorbeeld video en games."},
@@ -355,8 +358,8 @@ var UNITS = [
   {id:"l2-3", title:"DNS en HTTP",
    intro:"Wat gebeurt er als je een webadres intypt? DNS zoekt het adres op, HTTP haalt de pagina op.",
    steps:[
-    {t:"Doe de room DNS in Detail", m:30, url:THM+"dnsindetail", label:"TryHackMe"},
-    {t:"Doe de room HTTP in Detail", m:30, url:THM+"httpindetail", label:"TryHackMe"}
+    {t:"Doe de room DNS in Detail", m:30, url:THM+"dnsindetail", label:"TryHackMe", alt:{url:"https://www.cloudflare.com/learning/dns/what-is-dns/", label:"Cloudflare: What is DNS?"}},
+    {t:"Doe de room HTTP in Detail", m:30, url:THM+"httpindetail", label:"TryHackMe", alt:{url:"https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview", label:"MDN: HTTP"}}
    ],
    quiz:[
     {q:"Wat doet DNS?", o:["Domeinnamen omzetten naar IP-adressen","Websites sneller maken","E-mail versturen"], a:0, e:"DNS is het telefoonboek van internet."},
@@ -365,7 +368,7 @@ var UNITS = [
   {id:"l2-4", title:"Hoe websites werken",
    intro:"Het verschil tussen wat in je browser draait en wat op de server draait. Dit heb je straks nodig voor websecurity.",
    steps:[
-    {t:"Doe de room How Websites Work", m:30, url:THM+"howwebsiteswork", label:"TryHackMe"},
+    {t:"Doe de room How Websites Work", m:30, url:THM+"howwebsiteswork", label:"TryHackMe", alt:{url:"https://developer.mozilla.org/en-US/docs/Learn_web_development", label:"MDN: Learn web development"}},
     {t:"Open in je browser de ontwikkelaarstools (F12) en bekijk op het tabblad Netwerk welke verzoeken een website doet", m:20}
    ],
    quiz:[
@@ -797,6 +800,7 @@ var TOOLS = [
  {id:"vscode", name:"VS Code", what:"Teksteditor voor je notities en Python-scripts.", when:"Unit 0", url:"https://code.visualstudio.com/"},
  {id:"python", name:"Python 3", what:"Programmeertaal voor je eigen scripts.", when:"Unit 0", url:"https://www.python.org/downloads/"},
  {id:"git", name:"Git", what:"Versiebeheer voor je notities en write-ups in je repo.", when:"Unit 0", url:"https://git-scm.com/downloads"},
+ {id:"wsl", name:"WSL met Ubuntu", what:"Een echte Linux-terminal op je Windows-computer. Installeren met wsl --install.", when:"Unit 1", url:"https://learn.microsoft.com/en-us/windows/wsl/install"},
  {id:"wireshark", name:"Wireshark", what:"Netwerkverkeer bekijken en analyseren.", when:"Unit 2", url:"https://www.wireshark.org/download.html"},
  {id:"burp", name:"Burp Suite Community", what:"Webverkeer bekijken in de PortSwigger-labs. De gratis versie is genoeg.", when:"Unit 5", url:"https://portswigger.net/burp/communitydownload"},
  {id:"virtualbox", name:"VirtualBox", what:"Virtuele machines voor je eigen lab. Op een Mac met M-chip kan UTM ook.", when:"Unit 6", url:"https://www.virtualbox.org/wiki/Downloads"},
@@ -807,7 +811,7 @@ var TOOLS = [
  {id:"bitwarden", name:"Wachtwoordmanager", what:"Bijvoorbeeld Bitwarden (gratis versie). Beveiligt je eigen accounts.", when:"Unit 7", url:"https://bitwarden.com/"}
 ];
 var ACCOUNTS = [
- {id:"thm", name:"TryHackMe", what:"Begeleide rooms in je browser. Het gratis account is genoeg voor dit pad.", when:"Unit 1", url:"https://tryhackme.com/"},
+ {id:"thm", name:"TryHackMe", what:"Begeleide rooms in je browser. Een deel van de rooms is alleen voor abonnees; daarvoor staat in het pad een gratis alternatief.", when:"Unit 1", url:"https://tryhackme.com/"},
  {id:"otw", name:"OverTheWire", what:"Het Bandit-spel via SSH. Geen account nodig.", when:"Unit 1", url:"https://overthewire.org/wargames/bandit/"},
  {id:"ps", name:"PortSwigger Academy", what:"Gratis websecurity-cursus met labs.", when:"Unit 5", url:PS},
  {id:"cryptohack", name:"CryptoHack", what:"Cryptografie leren met puzzels.", when:"Unit 7", url:"https://cryptohack.org/"},
@@ -1093,7 +1097,8 @@ function planItem(it, inLesson){
       el("div", {class:"item-meta"},
         el("span", {class:"mins", text:s.m + " min"}),
         inLesson ? null : el("button", {class:"textbtn", text:"Les " + it.l.n + ": " + it.l.title, onclick:function(){ openLesson(it.l.id); }}),
-        s.url ? el("a", {class:"open", href:s.url, target:"_blank", rel:"noopener"}, s.label || "Openen", el("span", {icon:I.out})) : null)));
+        s.url ? el("a", {class:"open", href:s.url, target:"_blank", rel:"noopener"}, s.label || "Openen", el("span", {icon:I.out})) : null,
+        s.alt ? el("a", {class:"textbtn", href:s.alt.url, target:"_blank", rel:"noopener", text:"Vraagt de site om te betalen? Gratis alternatief: " + s.alt.label}) : null)));
 }
 function renderToday(){
   var p = document.getElementById("p-vandaag"); p.innerHTML = "";
@@ -1189,6 +1194,7 @@ function renderTools(){
   p.append(el("div", {class:"card stack-s"},
     el("h3", {style:"font-size:17px", text:"Installeren op je eigen computer"}),
     el("p", {class:"small", text:"Alles hieronder is gratis. Je hoeft het niet allemaal meteen te installeren: het label zegt in welke unit je het nodig hebt. In SETUP.md in je repo staan kant-en-klare installatiecommando's voor Windows, macOS en Linux."}),
+    el("p", {class:"small", text:"Vraagt een site toch om een abonnement? Koop niets. Gebruik het gratis alternatief dat bij de stap staat, of vraag Claude om er een."}),
     el("p", {class:"small muted", text:"Windows, in PowerShell, voor de basis (unit 0 tot en met 2):"}),
     el("pre", {class:"cmd", text:"winget install Microsoft.VisualStudioCode Python.Python.3.12 Git.Git WiresharkFoundation.Wireshark"})));
   var tl = el("div", {class:"tool-list"}); TOOLS.forEach(function(t){ tl.append(toolRow(t)); });

@@ -24,7 +24,7 @@ Mijn persoonlijke leerpad om ethisch hacken te leren: elke dag een uurtje (of mi
 | Unit | Onderwerp | Waar je oefent |
 |---|---|---|
 | 0 | Start & spelregels: wat mag wel en niet, werkplek klaarzetten | – |
-| 1 | Linux & de terminal | TryHackMe, OverTheWire Bandit |
+| 1 | Linux & de terminal | Ubuntu via WSL op je eigen pc, OverTheWire Bandit |
 | 2 | Netwerken: IP, TCP/UDP, DNS, HTTP, Wireshark | TryHackMe Pre Security, Wireshark |
 | 3 | Python, met twee mini-projecten | Python for Everybody |
 | 4 | Het web van binnenuit: HTTP, cookies, SQL, OWASP Top 10 | MDN, SQLBolt, OWASP |

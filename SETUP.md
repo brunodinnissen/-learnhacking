@@ -34,6 +34,22 @@ winget install Docker.DockerDesktop   # optioneel
 
 Vindt `winget` een pakket niet, zoek dan de juiste naam op met bijvoorbeeld `winget search wireshark`, of download het programma via de officiële site uit de tabel.
 
+### Linux op Windows: WSL (unit 1)
+
+Met WSL draai je gratis een echte Ubuntu-Linux op je Windows-computer. Open **PowerShell als administrator** (rechtermuisknop op PowerShell → *Als administrator uitvoeren*) en voer uit:
+
+```powershell
+wsl --install
+```
+
+Herstart je computer. Start daarna **Ubuntu** vanuit het Start-menu, en kies een gebruikersnaam en wachtwoord (dat wachtwoord heb je nodig voor `sudo`). Werk Ubuntu meteen bij:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+Je Windows-bestanden vind je in Ubuntu onder `/mnt/c/`. Meer uitleg: https://learn.microsoft.com/en-us/windows/wsl/install
+
 ## macOS
 
 Installeer eerst [Homebrew](https://brew.sh/) als je dat nog niet hebt. Daarna in de Terminal:
